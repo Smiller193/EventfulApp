@@ -81,6 +81,7 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
             detailView.eventPromo = allEvents[indexPath.row].currentEventPromo!
             detailView.eventDate = allEvents[indexPath.row].currentEventDate!
             detailView.eventTime = allEvents[indexPath.row].currentEventTime!
+            detailView.currentEvent = allEvents[indexPath.row]
             
             self.navigationController?.pushViewController(detailView, animated: true)
             

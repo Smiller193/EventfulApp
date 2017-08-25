@@ -317,12 +317,35 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
             Location.getLocation(accuracy: .city, frequency: .oneShot, success: { (_, location) -> (Void) in
                 print("Latitide: \(location.coordinate.latitude)")
                 print("Longitude: \(location.coordinate.longitude)")
+                let roughLatitude = location.coordinate.latitude.truncator(places: 1)
+                let roughLongitude = location.coordinate.longitude.truncator(places: 1)
+                let locationKey = String(format: "%.1f,%.1f", roughLatitude, roughLongitude).replacingOccurrences(of: ".", with: "%2e")
+                print("LocationKey: \(locationKey)")
+                
+                let roughLocationFromKey = locationKey.replacingOccurrences(of: "%2e", with: ".").components(separatedBy: ",").map { Double($0)}
+                
+                print(roughLocationFromKey)
+                
+                let searchBoxes = [
+                    String(format: "%.1f,%.1f", roughLatitude + 0.1, roughLongitude - 0.1).replacingOccurrences(of: ".", with: "%2e"),
+                    String(format: "%.1f,%.1f", roughLatitude + 0.1 , roughLongitude).replacingOccurrences(of: ".", with: "%2e"),
+                    String(format: "%.1f,%.1f", roughLatitude + 0.1, roughLongitude + 0.1).replacingOccurrences(of: ".", with: "%2e"),
+                    String(format: "%.1f,%.1f", roughLatitude, roughLongitude - 0.1).replacingOccurrences(of: ".", with: "%2e"),
+                    String(format: "%.1f,%.1f", roughLatitude, roughLongitude).replacingOccurrences(of: ".", with: "%2e"),
+                    String(format: "%.1f,%.1f", roughLatitude, roughLongitude + 0.1).replacingOccurrences(of: ".", with: "%2e"),
+                    String(format: "%.1f,%.1f", roughLatitude - 0.1, roughLongitude - 0.1).replacingOccurrences(of: ".", with: "%2e"),
+                    String(format: "%.1f,%.1f", roughLatitude - 0.1, roughLongitude).replacingOccurrences(of: ".", with: "%2e"),
+                    String(format: "%.1f,%.1f", roughLatitude - 0.1, roughLongitude + 0.1).replacingOccurrences(of: ".", with: "%2e")
+                ]
+                
+                print(searchBoxes)
+                
                 let location = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
                 Location.getPlacemark(forLocation: location, success: { placemarks -> (Void) in
                     //print(placemarks)
                     guard let currentCityLoc = placemarks.first?.locality else { return }
-                    self.userLocation = currentCityLoc
-                    guard case self.userLocation! = currentCityLoc else {
+                    self.userLocation = locationKey
+                    guard case self.userLocation! = locationKey else {
                         return
                     }
                     // print(placemarks.first?.locality)

@@ -17,6 +17,7 @@ import Firebase
 class CommentsViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UITextFieldDelegate{
     //arrray of comments that will determine how many cells are displayed as well as hold on to all comments in comment box
     // database handles for observing data with real time syncing
+    
     var messagesHandle: DatabaseHandle = 0
     var messagesRef: DatabaseReference?
     //eventkey for database use
@@ -188,7 +189,40 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
         
         let cell: CommentCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! CommentCell
         cell.comment = self.comments[indexPath.item]
+        cell.didTapOptionsButtonForCell = flagButtonTapped(from:)
         return cell
+    }
+    
+     func flagButtonTapped (from cell: CommentCell){
+        guard let indexPath = collectionView?.indexPath(for: cell) else { return }
+        
+        // 2
+        let comment = comments[indexPath.item]
+        let poster = comment.uid
+        
+        // 3
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        // 4
+        if comment.uid != User.current.uid {
+            let flagAction = UIAlertAction(title: "Report as Inappropriate", style: .default) { _ in
+                ChatService.flag(comment)
+                
+                let okAlert = UIAlertController(title: nil, message: "The post has been flagged.", preferredStyle: .alert)
+                okAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+                self.present(okAlert, animated: true)
+            }
+            
+            alertController.addAction(flagAction)
+        }
+        
+        // 5
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        // 6
+        present(alertController, animated: true, completion: nil)
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

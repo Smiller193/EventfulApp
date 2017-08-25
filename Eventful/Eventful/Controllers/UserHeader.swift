@@ -20,7 +20,7 @@ class UserProfileHeader: UICollectionViewCell {
     var user: User?{
         didSet {
             setupProfileImage()
-            userNameLabel.text = user?.username
+          //  userNameLabel.text = user?.username
             setupUserInteraction()
         }
     }
@@ -43,13 +43,7 @@ class UserProfileHeader: UICollectionViewCell {
     
     
     //creatas a UILabel
-    lazy var userNameLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Username"
-        label.font = UIFont.boldSystemFont(ofSize: 14)
-        return label
-    }()
-    
+  
     lazy var statsLabel : UILabel = {
        let statsLabel = UILabel()
         let attributedText = NSMutableAttributedString(string: "0\n", attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
@@ -205,10 +199,7 @@ class UserProfileHeader: UICollectionViewCell {
     
         setupToolBar()
         
-        addSubview(userNameLabel)
-        
-        userNameLabel.anchor(top: profileImage.bottomAnchor, left: leftAnchor, bottom: followersLabel.topAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 150, paddingBottom: 5, paddingRight: 12, width: 0, height: 0)
-        userNameLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+       
         
     }
     

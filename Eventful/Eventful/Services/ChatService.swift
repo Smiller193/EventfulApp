@@ -33,6 +33,41 @@ class ChatService {
     
     
     
+    
+    
+    static func flag(_ comment: CommentGrabbed) {
+        // 1
+        guard let commentKey = comment.commentID else { return }
+        
+        // 2
+        let flaggedPostRef = Database.database().reference().child("flaggedComments").child(commentKey)
+        
+        // 3
+        let flaggedDict = ["image_url": comment.user.profilePic,
+                           "poster_uid": comment.uid,
+                           "reporter_uid": User.current.uid]
+        
+        // 4
+        flaggedPostRef.updateChildValues(flaggedDict)
+        
+        // 5
+        let flagCountRef = flaggedPostRef.child("flag_count")
+        flagCountRef.runTransactionBlock({ (mutableData) -> TransactionResult in
+            let currentCount = mutableData.value as? Int ?? 0
+            
+            mutableData.value = currentCount + 1
+            
+            return TransactionResult.success(withValue: mutableData)
+        })
+    }
+    
+    
+    
+    
+    
+    
+    
+    
     static func observeMessages(forChatKey eventKey: String, completion: @escaping (DatabaseReference, Comments?) -> Void) -> DatabaseHandle {
         let messagesRef = Database.database().reference().child(eventKey)
         return messagesRef.observe(.childAdded, with: { snapshot in

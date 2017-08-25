@@ -202,9 +202,9 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
         stackView?.spacing = 15.0
         stackView?.anchor(top: goalLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 150)
         view.addSubview(signUpLabel)
-        _ = signUpLabel.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 75, paddingBottom: 5, paddingRight: 0, width: 0, height: 10)
+        _ = signUpLabel.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 75, paddingBottom: 10, paddingRight: 0, width: 0, height: 20)
         view.addSubview(signUpButton)
-        _ = signUpButton.anchor(top: nil, left: signUpLabel.rightAnchor, bottom: view.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 5, paddingBottom: 10, paddingRight: 0, width: 0, height: 2)
+        _ = signUpButton.anchor(top: nil, left: signUpLabel.rightAnchor, bottom: view.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 5, paddingBottom: 10, paddingRight: 0, width: 0, height: 20)
     }
     
     //Calls this function when the tap is recognized.

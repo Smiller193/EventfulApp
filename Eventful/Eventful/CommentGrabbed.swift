@@ -13,7 +13,7 @@ struct CommentGrabbed {
     let uid: String
     let user: User
     let creationDate: Date
-    var commentID = ""
+    var commentID: String? = ""
     
 
     

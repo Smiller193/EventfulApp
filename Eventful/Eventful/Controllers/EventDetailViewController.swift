@@ -12,10 +12,12 @@ import FirebaseDatabase
 
 class EventDetailViewController: UIViewController {
     
-    var event: Event?
+    var currentEvent : Event?
+//    var users = [User]()
     let camera = CameraViewController()
     let commentsController = CommentsViewController(collectionViewLayout: UICollectionViewFlowLayout())
     let eventStory = StoriesViewController()
+
     
     //variables that will hold data sent in through previous event controller
     var eventImage = ""
@@ -50,8 +52,11 @@ class EventDetailViewController: UIViewController {
     
     func handlePromoVid(){
         print("Image tappped")
-        let videoLauncher = VideoLauncher()
-        videoLauncher.showVideoPlayer()
+        let url = URL(string: eventPromo)
+        let videoLauncher = VideoViewController(videoURL: url!)
+        videoLauncher.nextButton.isHidden = true
+        self.navigationController?.pushViewController(videoLauncher, animated: true)
+
     }
     
     
@@ -143,10 +148,11 @@ class EventDetailViewController: UIViewController {
         attendingButton.isUserInteractionEnabled = false
         // 3
         
-        var isAttending = false
-        // 4
-        AttendService.setIsAttending(!isAttending, for: self.eventKey) { (success) in
+        
+        
+        AttendService.setIsAttending(!((currentEvent?.isAttending)!), from: currentEvent) { (success) in
             // 5
+            
             defer {
                 self.attendingButton.isUserInteractionEnabled = true
             }
@@ -155,8 +161,10 @@ class EventDetailViewController: UIViewController {
             guard success else { return }
             
             // 7
-            self.event?.currentAttendCount += !isAttending ? 1 : -1
-            isAttending = !isAttending}
+            self.currentEvent?.isAttending = !((self.currentEvent!.isAttending))
+            self.currentEvent?.currentAttendCount += !((self.currentEvent!.isAttending)) ? 1 : -1
+        
+        }
         
     }
     
@@ -221,11 +229,15 @@ class EventDetailViewController: UIViewController {
         _ = addToStoryButton.anchor(top: descriptionLabel.bottomAnchor, left: attendingButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 30)
         _ = viewStoryButton.anchor(top: descriptionLabel.bottomAnchor, left: addToStoryButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
         viewStoryButton.layer.cornerRadius = 40/2
+        attendingButton.isSelected = (currentEvent?.isAttending)!
+
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = false
+        tabBarController?.tabBar.isHidden = false
         let ref = Database.database().reference().child("Comments").child(self.eventKey)
         
         ref.observe(.value, with: { (snapshot: DataSnapshot!) in

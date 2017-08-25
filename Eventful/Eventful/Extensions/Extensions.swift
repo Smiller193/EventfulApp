@@ -88,3 +88,13 @@ extension Date {
         
     }
 }
+
+extension Double
+{
+    
+    func truncator(places : Int)-> Double
+    {
+        let x = Double(Int((pow(10.0, Double(places)) * self)))
+        return Double(x/pow(10.0, Double(places)))
+    }
+}

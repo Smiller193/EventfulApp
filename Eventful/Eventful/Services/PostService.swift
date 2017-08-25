@@ -44,7 +44,7 @@ struct PostService {
         //getting firebase root directory
         let ref = Database.database().reference().child("events")
         
-        let query = ref.queryOrdered(byChild: "event:city").queryEqual(toValue: location)
+        let query = ref.queryOrdered(byChild: "event:location").queryEqual(toValue: location)
         query.observeSingleEvent(of: .value, with: { (snapshot) in
             print(snapshot.value)
             

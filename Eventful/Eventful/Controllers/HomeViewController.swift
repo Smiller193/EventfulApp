@@ -32,7 +32,7 @@ class HomeViewController: UITabBarController {
         navController.tabBarItem.image = UIImage(named: "icons8-Home-50")
         navController.tabBarItem.selectedImage = UIImage(named: "icons8-Home Filled-50")
 
-        
+        navController.tabBarItem.title = "Home"
         //ProfileeViewController being setup and added to array of view controllers
         
         let profileView = ProfileeViewController(collectionViewLayout: layout)
@@ -42,10 +42,13 @@ class HomeViewController: UITabBarController {
         profileViewNavController.tabBarItem.image = UIImage(named: "icons8-User-50")
         profileViewNavController.tabBarItem.selectedImage = UIImage(named: "icons8-User Filled-50")
         
-        
+        profileViewNavController.tabBarItem.title = "Search"
+
         let searchController = EventSearchController(collectionViewLayout: UICollectionViewFlowLayout())
         let searchNavController = UINavigationController(rootViewController: searchController)
         searchNavController.tabBarItem.image = UIImage(named: "icons8-Search-48")
+ 
+        searchNavController.tabBarItem.title = "Search"
 
         
         // array of view controllers
@@ -55,9 +58,7 @@ class HomeViewController: UITabBarController {
             return
         }
         
-        for item in items{
-            item.imageInsets = UIEdgeInsetsMake(4, 0, 0, -4)
-        }
+    
         
     }
     

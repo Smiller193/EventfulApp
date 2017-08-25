@@ -38,7 +38,7 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
     //detects when search bar text is done editing
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         print("Stopped Editing")
-        print(searchBar.text)
+        print(searchBar.text ?? "")
         guard let searchText = searchBar.text else{
             return
         }
@@ -111,7 +111,6 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
         collectionView?.register(SearchHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerID")
         
         self.navigationController?.navigationBar.isHidden = true
-         let searchController = UISearchController(searchResultsController: nil)
        // searchBar.anchor(top: navBar?.topAnchor, left: navBar?.leftAnchor, bottom: navBar?.bottomAnchor, right: navBar?.rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 8, width: 0, height: 0)
         //will register a cell to the screen
         //notice the EventSearchCell that is one of the parameters

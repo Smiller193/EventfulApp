@@ -30,6 +30,14 @@ class VideoViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    lazy var nextButton: UIButton = {
+        let nextButton = UIButton(frame: CGRect(x: 320, y: 600, width: 30, height: 30))
+        nextButton.backgroundColor = UIColor.clear
+        nextButton.setImage(#imageLiteral(resourceName: "next"), for: UIControlState())
+        nextButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        nextButton.addTarget(self, action: #selector(nextPressed), for: .touchUpInside)
+        return nextButton
+    }()
     
     
     
@@ -59,11 +67,7 @@ class VideoViewController: UIViewController {
         view.addSubview(cancelButton)
         
         //TODO: Need to fix frame of x and y
-        let nextButton = UIButton(frame: CGRect(x: 320, y: 600, width: 30, height: 30))
-        nextButton.backgroundColor = UIColor.clear
-        nextButton.setImage(#imageLiteral(resourceName: "next"), for: UIControlState())
-        nextButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
-        nextButton.addTarget(self, action: #selector(nextPressed), for: .touchUpInside)
+      
         view.addSubview(nextButton)
         
         //Constraints
@@ -77,6 +81,13 @@ class VideoViewController: UIViewController {
         super.viewDidAppear(animated)
         player?.play()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+        tabBarController?.tabBar.isHidden = true
+    }
+    
     
     func cancel() {
         //        dismiss(animated: true, completion: nil)

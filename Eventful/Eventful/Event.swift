@@ -25,6 +25,8 @@ struct  Event {
     let currentEventZip: Int
     //nested properties stop
     var currentAttendCount: Int
+    var isAttending = false
+
     var eventDictionary: [String: Any]{
         
         
