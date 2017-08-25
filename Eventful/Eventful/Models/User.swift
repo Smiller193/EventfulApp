@@ -15,22 +15,24 @@ class User : NSObject {
     let gender : String?
     let username : String?
     let profilePic: String?
+    var location: String?
     var isFollowed = false
     let bio: String?
     var dictValue: [String : Any] {
         return ["gender" : gender,
                 "username" : username,
                 "profilePic" : profilePic,
-                "Bio" : bio]
+                "Bio" : bio, "location": location]
     }
     
     //Standard User init()
-    init(uid: String, username: String, gender: String, profilePic: String, bio: String) {
+    init(uid: String, username: String, gender: String, profilePic: String, bio: String, location: String = "") {
         self.uid = uid
         self.username = username
         self.gender = gender
         self.profilePic = profilePic
         self.bio = bio
+    self.location = location
         super.init()
     }
     
@@ -40,10 +42,12 @@ class User : NSObject {
             let gender = dict["gender"] as? String,
             let username = dict["username"] as? String,
             let profilePic = dict["profilePic"] as? String,
-            let bio = dict["bio"] as? String
+            let bio = dict["bio"] as? String,
+        let location = dict["location"] as? String
             else { return nil }
         self.uid = snapshot.key
         self.gender = gender
+        self.location = location
         self.username = username
         self.profilePic = profilePic
         self.bio = bio
@@ -55,7 +59,8 @@ class User : NSObject {
             let gender = aDecoder.decodeObject(forKey: "gender") as? String,
             let username = aDecoder.decodeObject(forKey: "username") as? String,
             let profilePic = aDecoder.decodeObject(forKey: "profilePic") as? String,
-            let bio = aDecoder.decodeObject(forKey: "bio") as? String
+            let bio = aDecoder.decodeObject(forKey: "bio") as? String,
+            let location = aDecoder.decodeObject(forKey: "location") as? String
             else { return nil }
         
         self.uid = uid
@@ -63,6 +68,7 @@ class User : NSObject {
         self.username = username
         self.profilePic = profilePic
         self.bio = bio
+        self.location = location
         super.init()
     }
     
@@ -76,8 +82,10 @@ class User : NSObject {
         let bio = dict["bio"] as? String ?? ""
         let username = dict["username"] as? String ?? ""
         let gender = dict["gender"] as? String ?? ""
+        let location = dict["location"] as? String ?? ""
         
         self.uid = key
+        self.location = location
         self.profilePic = profilePic
         self.username = username
         self.gender = gender
@@ -115,6 +123,7 @@ extension User: NSCoding {
         aCoder.encode(username, forKey: "username")
         aCoder.encode(profilePic, forKey: "profilePic")
         aCoder.encode(bio, forKey: "bio")
+        aCoder.encode(location, forKey: "location")
 
     }
 }

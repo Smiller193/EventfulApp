@@ -18,6 +18,8 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
     let cellId = "cellID"
     var scopeIndex: Int = 0
     let cellID2 = "newCellID"
+    let userProfileController = ProfileeViewController(collectionViewLayout: UICollectionViewFlowLayout())
+    let currentEventDetailController = EventDetailViewController()
     
     //ui search bar that will allow you to type in text and filter out results
     //most of the code here is straight forward 
@@ -82,11 +84,13 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         switch selectedScope {
         case 0:
+            searchBar.text = ""
             self.scopeIndex = selectedScope
             self.filteredEvents.removeAll()
             self.collectionView?.reloadData()
             break
         case 1:
+            searchBar.text = ""
             self.scopeIndex = selectedScope
             self.filteredUsers.removeAll()
             self.collectionView?.reloadData()
@@ -288,7 +292,6 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
         case 0:
             let event = filteredEvents[indexPath.item]
             print(event.currentEventKey)
-            let currentEventDetailController = EventDetailViewController()
             currentEventDetailController.eventImage = event.currentEventImage
             currentEventDetailController.eventName = event.currentEventName
             currentEventDetailController.eventDescription = event.currentEventDescription
@@ -297,15 +300,24 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
             currentEventDetailController.eventState = event.currentEventState
             currentEventDetailController.eventZip = event.currentEventZip
             currentEventDetailController.eventKey = event.currentEventKey
-            
+            currentEventDetailController.eventDate = event.currentEventDate!
+            currentEventDetailController.eventTime = event.currentEventTime!
             self.filteredEvents.removeAll(keepingCapacity: true)
             self.eventsArray.removeAll(keepingCapacity: true)
             self.collectionView?.reloadData()
             navigationController?.pushViewController(currentEventDetailController, animated: true)
+            navigationController?.navigationBar.isHidden = false
             break
         case 1:
+            navigationController?.navigationBar.isHidden = false
             let user = filteredUsers[indexPath.item]
-            
+            print(user.username)
+            userProfileController.userId = user.uid
+            userProfileController.navigationItem.title = user.username
+            userProfileController.navigationItem.hidesBackButton = true
+            let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
+            userProfileController.navigationItem.leftBarButtonItem = backButton
+            navigationController?.pushViewController(userProfileController, animated: true)
             break
         default:
             break
@@ -313,11 +325,16 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
    
     }
     
+    func GoBack(){
+        _ = self.navigationController?.popViewController(animated: true)
+    }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
        // searchBar.text = ""
         self.collectionView?.reloadData()
+        navigationController?.navigationBar.isHidden = true
         filteredEvents.removeAll()
       //  searchBar.isHidden = false
     }

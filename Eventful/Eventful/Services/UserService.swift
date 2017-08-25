@@ -16,10 +16,10 @@ import  UIKit
 struct UserService {
     
     /// will create a user in the database
-    static func create(_ firUser: FIRUser, username: String, gender: String,profilePic: String,bio: String,
-                       completion: @escaping (User?) -> Void) {
+    static func create(_ firUser: FIRUser, username: String, gender: String,profilePic: String,bio: String,location: String, completion: @escaping (User?) -> Void) {
         let userAttrs = ["username": username,
                          "gender": gender,
+                         "location": location,
                          "profilePic": profilePic,
                          "bio": bio] as [String : Any]
         //creats the path in the database where we want our user attributes to be created
@@ -81,8 +81,8 @@ struct UserService {
     
     
     // will observe the user object in the database for any changes and make sure that they are updated
-    static func observeProfile(for user: User, completion: @escaping (DatabaseReference, User?) -> Void) -> DatabaseHandle {
-        let userRef = Database.database().reference().child("users").child(user.uid)
+    static func observeProfile(for uid: String, completion: @escaping (DatabaseReference, User?) -> Void) -> DatabaseHandle {
+        let userRef = Database.database().reference().child("users").child(uid)
         return userRef.observe(.value, with: { snapshot in
             guard let user = User(snapshot: snapshot) else {
                 return completion(userRef, nil)

@@ -26,6 +26,8 @@ class ProfileeViewController: UICollectionViewController, UICollectionViewDelega
     var profileHandle: DatabaseHandle = 0
     var profileRef: DatabaseReference?
     var userEvents = [Event]()
+    var userId: String?
+    var user: User?
     
     var currentUserName: String = ""
     
@@ -38,16 +40,16 @@ class ProfileeViewController: UICollectionViewController, UICollectionViewDelega
 collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerID")
         
         collectionView?.register(EventsAttendingCell.self, forCellWithReuseIdentifier: cellID)
-        fetchEvents()
+//        fetchEvents()
         collectionView?.alwaysBounceVertical = true
     }
     
 
     
-   fileprivate func fetchEvents(){
+    fileprivate func fetchEvents(uid: String){
         print("123")
-        
-         userEventRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("Attending")
+   
+         userEventRef = Database.database().reference().child("users").child(uid).child("Attending")
         userEventRef?.observe(.value, with: { (snapshot) in
             guard let dictionaries = snapshot.value as? [String: Any] else{
                 return
@@ -71,10 +73,12 @@ collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UIC
     
     
     fileprivate func fetchUser(){
-        profileHandle = UserService.observeProfile(for: User.current) { [unowned self] (ref, user) in
+        let uid = userId ?? Auth.auth().currentUser?.uid ?? ""
+        profileHandle = UserService.observeProfile(for: uid) { [unowned self] (ref, user) in
             self.profileRef = ref
+            self.user = user
             if let user = user{
-                User.setCurrent(user, writeToUserDefaults: true)
+                //User.setCurrent(user, writeToUserDefaults: true)
                 let url = user.profilePic
                 let imageURL = URL(string: url!)
                 if imageURL == nil{
@@ -92,7 +96,10 @@ collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UIC
                 }
                 
                 self.navigationItem.title = username
+
                 self.collectionView?.reloadData()
+                self.fetchEvents(uid: uid)
+
                 //self.userNameLabel.text = currentUserName
                 let currentBio = user.bio
                 if currentBio == ""{
@@ -110,7 +117,7 @@ collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UIC
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerID", for: indexPath) as! UserProfileHeader
         header.profileeSettings.addTarget(self, action: #selector(profileSettingsTapped), for: .touchUpInside)
         header.settings.addTarget(self, action: #selector(settingsButtonTapped), for: .touchUpInside)
-        header.user = User.current
+        header.user = self.user
         return header
     }
     

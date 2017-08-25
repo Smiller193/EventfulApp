@@ -13,22 +13,14 @@ import FirebaseAuth
 
 struct AttendService {
     static func create(for event: String?, success: @escaping (Bool) -> Void) {
-        // 1
         guard let key = event else {
             return success(false)
         }
-        
-        
-        // 2
-        
         guard let uid = Auth.auth().currentUser?.uid else{
             return
         }
-        
-        
         let attendData = ["Attending/\(key)/\(uid)" : true,
                           "users/\(uid)/\("Attending")/\(key)" : true]
-        
        // let ref = Database.database().reference().child("users").child(uid).child("Attending")
         
         

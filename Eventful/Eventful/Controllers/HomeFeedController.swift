@@ -10,8 +10,12 @@ import Foundation
 import UIKit
 import Alamofire
 import AlamofireNetworkActivityIndicator
+import SwiftLocation
+import CoreLocation
 
 class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    let detailView = EventDetailViewController()
+
     var allEvents = [Event]()
     //will containt array of event keys
     var eventKeys = [String]()
@@ -28,8 +32,8 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
         collectionView?.reloadData()
         navigationItem.title = "Home Page"
         collectionView?.register(CustomCell.self, forCellWithReuseIdentifier: customCellIdentifier)
-       
-        PostService.showEvent { event in
+        
+        PostService.showEvent(location: User.current.location!) { (event) in
             self.allEvents = event
             print(self.allEvents)
             
@@ -38,8 +42,13 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
             }
         }
         
+       
+    
+    
         
-        }
+    
+    }
+
     
     // need to tell it how many cells to have
     
@@ -59,7 +68,6 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
         //let selectedEvent = self.imageArray[indexPath.row]
         //let eventDetailVC
         if let cell = collectionView.cellForItem(at: indexPath){
-            let detailView = EventDetailViewController()
             detailView.eventImage = allEvents[indexPath.row].currentEventImage
             detailView.eventName = allEvents[indexPath.row].currentEventName
           //  print("Look here for event name")
@@ -71,12 +79,14 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
             detailView.eventZip = allEvents[indexPath.row].currentEventZip
             detailView.eventKey = allEvents[indexPath.row].currentEventKey
             detailView.eventPromo = allEvents[indexPath.row].currentEventPromo!
+            detailView.eventDate = allEvents[indexPath.row].currentEventDate!
+            detailView.eventTime = allEvents[indexPath.row].currentEventTime!
+            
             self.navigationController?.pushViewController(detailView, animated: true)
             
         }
          print("Cell \(indexPath.row) selected")
     }
-    
     //will make surepictures keep same orientation even if you flip screen
     // will most likely look into portrait mode but still good to have
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -103,7 +113,6 @@ class CustomCell: UICollectionViewCell {
         super.init(frame: frame)
         setupViews()
     }
-    
     let sampleImage: UIImageView = {
         let firstImage = UIImageView()
         firstImage.clipsToBounds = true
@@ -112,30 +121,22 @@ class CustomCell: UICollectionViewCell {
         firstImage.layer.masksToBounds = true
         return firstImage
     }()
-    
     let nameLabel: UILabel = {
         let name = UILabel()
         name.text = "Custom Text"
         name.translatesAutoresizingMaskIntoConstraints = false
         return name
     }()
-    
     func setupViews() {
-      
         addSubview(sampleImage)
         backgroundColor = UIColor.white
         //addSubview(nameLabel)
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[v0]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": sampleImage]))
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[v0]|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": sampleImage]))
     }
-    
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
-    
     
 }
 
@@ -152,12 +153,10 @@ class GridLayout: UICollectionViewFlowLayout {
         self.minimumInteritemSpacing = 3
         self.minimumLineSpacing = 5
     }
-    
     // just needs to be here because swift tells us to
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     override var itemSize: CGSize{
         get{
             if collectionView != nil {
@@ -171,8 +170,4 @@ class GridLayout: UICollectionViewFlowLayout {
             super.itemSize = newValue
         }
     }
-    
-    
-    
-    
 }

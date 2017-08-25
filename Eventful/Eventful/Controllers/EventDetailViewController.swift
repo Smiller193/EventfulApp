@@ -13,6 +13,9 @@ import FirebaseDatabase
 class EventDetailViewController: UIViewController {
     
     var event: Event?
+    let camera = CameraViewController()
+    let commentsController = CommentsViewController(collectionViewLayout: UICollectionViewFlowLayout())
+    let eventStory = StoriesViewController()
     
     //variables that will hold data sent in through previous event controller
     var eventImage = ""
@@ -25,6 +28,8 @@ class EventDetailViewController: UIViewController {
     var eventDate = ""
     var eventKey = ""
     var eventPromo = ""
+    var eventTime = ""
+    
     var currentEventAttendCount = 0 
     //
     lazy var currentEventImage : UIImageView = {
@@ -53,7 +58,7 @@ class EventDetailViewController: UIViewController {
     //will show the event name
     lazy var eventNameLabel: UILabel = {
         let currentEventName = UILabel()
-        currentEventName.text = self.eventName
+        currentEventName.text = self.eventName.capitalized
         currentEventName.translatesAutoresizingMaskIntoConstraints = false
         return currentEventName
     }()
@@ -91,8 +96,7 @@ class EventDetailViewController: UIViewController {
     
     func presentComments(){
         print("Comments button pressed")
-        let layout = UICollectionViewFlowLayout()
-        let commentsController = CommentsViewController(collectionViewLayout:layout)
+      
         commentsController.eventKey = eventKey
         
         let navController = UINavigationController(rootViewController: commentsController)
@@ -166,7 +170,6 @@ class EventDetailViewController: UIViewController {
     
     func beginAddToStory(){
        print("Attempting to load camera")
-        let camera = CameraViewController()
         camera.eventKey = self.eventKey
         self.navigationController?.pushViewController(camera, animated: true)
     }
@@ -182,7 +185,6 @@ class EventDetailViewController: UIViewController {
     
     func handleViewStory(){
         print("Attempting to view story")
-        let eventStory = StoriesViewController()
         eventStory.eventKey = self.eventKey
         present(eventStory, animated: true, completion: nil)
     }
@@ -190,7 +192,7 @@ class EventDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
-        navigationItem.title = eventName
+        navigationItem.title = eventName.capitalized
         self.navigationItem.hidesBackButton = true
         let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
         self.navigationItem.leftBarButtonItem = backButton

@@ -18,7 +18,7 @@ import SVProgressHUD
 class AlterProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 //temporary holder for profile pic
     var profileImageTemp: UIImage? = UIImage()
-    
+    var uid = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         view?.backgroundColor = UIColor.white
@@ -132,6 +132,7 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
       let changeName = UITextField()
         if User.current.username != ""{
             changeName.text = User.current.username
+            print(changeName.text)
         }else{
             changeName.placeholder = "Username"
         }

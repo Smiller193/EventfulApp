@@ -49,7 +49,15 @@ class HomeViewController: UITabBarController {
 
         
         // array of view controllers
-        viewControllers = [navController,profileViewNavController, searchNavController]
+        viewControllers = [navController,searchNavController, profileViewNavController]
+        
+        guard let items = tabBar.items else {
+            return
+        }
+        
+        for item in items{
+            item.imageInsets = UIEdgeInsetsMake(4, 0, 0, -4)
+        }
         
     }
     

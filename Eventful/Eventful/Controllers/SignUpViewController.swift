@@ -9,7 +9,8 @@
 import UIKit
 import Foundation
 import SVProgressHUD
-
+import SwiftLocation
+import CoreLocation
 
 
 protocol SignUpViewControllerDelegate: class {
@@ -20,7 +21,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
     
     var selectedUserGender: String = ""
     // creates a signup UILabel
-    
+    var userLocation:String?
     
     weak var delegate : SignUpViewControllerDelegate?
     
@@ -34,16 +35,6 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
         return signUpLabel
     }()
     
-    // creates a name UILabel
-
-    let nameLabel: UILabel = {
-       let nameLabel = UILabel()
-        let myString = "Username"
-        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 15)!]
-        let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
-        nameLabel.attributedText = myAttrString
-        return nameLabel
-    }()
     // creates a name UITextField to hold the name
 
     let nameTextField : LeftPaddedTextField = {
@@ -53,37 +44,17 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
         nameText.layer.borderWidth = 1
         return nameText
     }()
-    // creates a email UILabel
 
-    let emailLabel: UILabel = {
-        let userEmailLabel = UILabel()
-        let myString = "Email"
-        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 15)!]
-        let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
-        userEmailLabel.attributedText = myAttrString
-        return userEmailLabel
-    }()
-    
     // creates a email UITextField to hold the email
     let emailTextField : LeftPaddedTextField = {
         let emaiilText = LeftPaddedTextField()
         emaiilText.placeholder = "Email"
         emaiilText.layer.borderColor = UIColor.lightGray.cgColor
         emaiilText.layer.borderWidth = 1
+        emaiilText.borderStyle = .roundedRect
         return emaiilText
     }()
 
-    //creates a password UILabel
-    
-    let passwordLabel: UILabel = {
-        let userPasswordLabel = UILabel()
-        let myString = "Password"
-        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 15)!]
-        let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
-        userPasswordLabel.attributedText = myAttrString
-        return userPasswordLabel
-    }()
-    
     //creates a password UItextield
     let passwordTextField : LeftPaddedTextField = {
         let passwordText = LeftPaddedTextField()
@@ -91,26 +62,19 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
         passwordText.layer.borderColor = UIColor.lightGray.cgColor
         passwordText.layer.borderWidth = 1
         passwordText.isSecureTextEntry = true
+        passwordText.borderStyle = .roundedRect
+
         return passwordText
     }()
 
-    //creates a confirm password UIlabel
-    let confirmPasswordLabel: UILabel = {
-        let confirmPasswordLabel = UILabel()
-        let myString = "Confirm Password"
-        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 15)!]
-        let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
-        confirmPasswordLabel.attributedText = myAttrString
-        return confirmPasswordLabel
-    }()
-    
     //creates a confirm password UItextfield
     let confirmPasswordTextField : LeftPaddedTextField = {
         let confirmPasswordText = LeftPaddedTextField()
-        confirmPasswordText.placeholder = "Password"
+        confirmPasswordText.placeholder = "Confirm Password"
         confirmPasswordText.layer.borderColor = UIColor.lightGray.cgColor
         confirmPasswordText.layer.borderWidth = 1
         confirmPasswordText.isSecureTextEntry = true
+        confirmPasswordText.borderStyle = .roundedRect
         return confirmPasswordText
     }()
     
@@ -121,6 +85,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
         button.backgroundColor = .black
         button.setTitle("SIGN UP", for: .normal)
         button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
         return button
     }()
@@ -162,6 +127,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
             alertController.addAction(defaultAction)
             present(alertController, animated: true, completion: nil)
         }
+        
             // will authenticate a user into the authentication services with an email and passowrd
             AuthService.createUser(controller: self, email: email, password: password) { (authUser) in
                 guard let firUser = authUser else {
@@ -169,7 +135,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
                 }
                 
                 // wlll add the user to the firebase database
-                UserService.create(firUser, username: username, gender: gender , profilePic: profilePic , bio: bio) { (user) in
+                UserService.create(firUser, username: username, gender: gender , profilePic: profilePic , bio: bio, location: self.userLocation!) { (user) in
                     guard let user = user else {
                          print("User successfully loaded into firebase db")
                         return
@@ -246,7 +212,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
     let cancelButton : UIButton = {
        let cancel = UIButton()
         cancel.setTitle("Cancel", for: .normal)
-        cancel.titleLabel?.font = UIFont.boldSystemFont(ofSize: 10)
+        cancel.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         cancel.setTitleColor(.black, for: .normal)
         cancel.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
         return cancel
@@ -306,17 +272,6 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
         /////////////////////////  Where all the subviews will be added
         
         view.addSubview(signUp)
-        view.addSubview(nameLabel)
-        view.addSubview(nameTextField)
-        view.addSubview(emailLabel)
-        view.addSubview(emailTextField)
-        view.addSubview(passwordLabel)
-        view.addSubview(passwordTextField)
-        view.addSubview(confirmPasswordLabel)
-        view.addSubview(confirmPasswordTextField)
-        view.addSubview(signupButton)
-        view.addSubview(genderLabel)
-        view.addSubview(genderSelector)
         view.addSubview(cancelButton)
         ////////////////////////////////////////////////////////////////////
         
@@ -325,40 +280,65 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
         // constraints for the sign up label/title
         _ = signUp.anchor(top: view.centerYAnchor, left: nil, bottom: nil, right: nil, paddingTop: -280, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 70, height: 35)
         signUp.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        //constraints for name label
-        _ = nameLabel.anchor(top: signUp.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 32, paddingBottom: 0, paddingRight: 0, width: 70, height: 14)
-        //constraints for name text field
-        _ = nameTextField.anchor(top: nameLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 3.7, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 0, height: 40)
-        //constraints for email label
-        _ = emailLabel.anchor(top: nameTextField.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 32, paddingBottom: 0, paddingRight: 0, width: 70, height: 14)
-        //constraints for email text field
-         _ = emailTextField.anchor(top: emailLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 3.7, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 0, height: 40)
-        //constraints for the password label
-        _ = passwordLabel.anchor(top: emailTextField.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 32, paddingBottom: 0, paddingRight: 0, width: 70, height: 14)
-        //constraints for the password text field
-         _ = passwordTextField.anchor(top: passwordLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 3.7, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 0, height: 40)
-        //constraisnts for the confirm password label
-        _ = confirmPasswordLabel.anchor(top: passwordTextField.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 32, paddingBottom: 0, paddingRight: 0, width: 160, height: 14)
-        //constraints for the confirm password textfield
-         _ = confirmPasswordTextField.anchor(top: confirmPasswordLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 3.7, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 0, height: 40)
-        //constaints for the gender label
-        _ = genderLabel.anchor(top: confirmPasswordTextField.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 70, height: 14)
-        //constraints for segmented control
-        _ = genderSelector.anchor(top: confirmPasswordTextField.bottomAnchor, left: genderLabel.rightAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 15, paddingBottom: 0, paddingRight: 32, width: 100, height: 20)
-        //constraints for the sign up button
-        _ = signupButton.anchor(top: genderSelector .bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 18.7, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 0, height: 40)
-        //constraints for the cancel button
+
         _ = cancelButton.anchor(top: view.centerYAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: -300, paddingLeft: 20, paddingBottom: 0, paddingRight: 0, width: 0, height: 20)
 
         ////////////////////////////////////////////////////////////////////
 
         
-        
+        createSignUpScreen()
 
         
         // Do any additional setup after loading the view.
     }
+    
+    var stackView: UIStackView?
+    
+    func  createSignUpScreen(){
+        stackView = UIStackView(arrangedSubviews: [ nameTextField, emailTextField,passwordTextField,confirmPasswordTextField,genderSelector, signupButton])
+        view.addSubview(stackView!)
+        stackView?.distribution = .fillEqually
+        stackView?.axis = .vertical
+        stackView?.spacing = 15.0
+        stackView?.anchor(top: signUp.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 250)
+        
+        
+    }
 
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let alertController = UIAlertController(title: "Enable access to your location \n Discover events near you", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        
+        let cancelAction = UIAlertAction(title: "Deny", style: .cancel, handler: nil)
+        
+        alertController.addAction(cancelAction)
+        let locationAction = UIAlertAction(title: "Allow", style: .default){_ in
+            Location.getLocation(accuracy: .city, frequency: .oneShot, success: { (_, location) -> (Void) in
+                print("Latitide: \(location.coordinate.latitude)")
+                print("Longitude: \(location.coordinate.longitude)")
+                let location = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                Location.getPlacemark(forLocation: location, success: { placemarks -> (Void) in
+                    //print(placemarks)
+                    guard let currentCityLoc = placemarks.first?.locality else { return }
+                    self.userLocation = currentCityLoc
+                    guard case self.userLocation! = currentCityLoc else {
+                        return
+                    }
+                    // print(placemarks.first?.locality)
+                }, failure: { error -> (Void) in
+                    print("Cannot retrive placemark due to an error \(error)")
+                })
+            }, error: { (request, last, error) -> (Void) in
+                request.cancel()
+                print("Location monitoring failed due to an error \(error)")
+            })
+        }
+        alertController.addAction(locationAction)
+        
+        
+        self.present(alertController, animated: true)
+    }
    
 
 }

@@ -53,22 +53,12 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
     let goalLabel : UILabel =  {
         let primaryGoalLabel = UILabel()
         let myString = "Use our application to find events"
-        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 7.0)!]
+        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 13)!]
         let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
         primaryGoalLabel.attributedText = myAttrString
         return primaryGoalLabel
     }()
-    // creates a UILabel
     
-    
-    let emailLabel : UILabel =  {
-        let userEmailLabel = UILabel()
-        let myString = "Email"
-        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 7.0)!]
-        let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
-        userEmailLabel.attributedText = myAttrString
-        return userEmailLabel
-    }()
     // creates a UITextField
     
     let emailTextField : LeftPaddedTextField = {
@@ -76,25 +66,18 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
         textField.placeholder = "Email"
         textField.layer.borderColor = UIColor.lightGray.cgColor
         textField.layer.borderWidth = 1
+        textField.borderStyle = .roundedRect
         textField.keyboardType = .emailAddress
         return textField
     }()
-    // creates a UILabel
-    
-    let passwordLabel : UILabel =  {
-        let userPasswordLabel = UILabel()
-        let myString = "Password"
-        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 7.0)!]
-        let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
-        userPasswordLabel.attributedText = myAttrString
-        return userPasswordLabel
-    }()
+
     // creates a UITextField
     let passwordTextField : LeftPaddedTextField = {
         let textField = LeftPaddedTextField()
         textField.placeholder = "Password"
         textField.layer.borderColor = UIColor.lightGray.cgColor
         textField.layer.borderWidth = 1
+        textField.borderStyle = .roundedRect
         textField.isSecureTextEntry = true
         return textField
     }()
@@ -105,6 +88,8 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
         button.backgroundColor = .black
         button.setTitle("LOGIN", for: .normal)
         button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 5
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         return button
     }()
@@ -156,7 +141,7 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
     let signUpLabel: UILabel = {
         let signUp = UILabel()
         let myString = "Don't have an account?"
-        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 10)!]
+        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 15)!]
         let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
         signUp.attributedText = myAttrString
         return signUp
@@ -167,7 +152,7 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
     let signUpButton: UIButton = {
         let signUpButton = UIButton(type: .system)
         signUpButton.setTitle("Sign Up", for: .normal)
-        signUpButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 10)
+        signUpButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
         signUpButton.setTitleColor(.black, for: .normal)
         signUpButton.addTarget(self, action: #selector(handleSignUpTransition), for: .touchUpInside)
         return signUpButton
@@ -180,13 +165,6 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
         view.addSubview(nameOfAppLabel)
         view.addSubview(welcomeBackLabel)
         view.addSubview(goalLabel)
-        view.addSubview(emailLabel)
-        view.addSubview(emailTextField)
-        view.addSubview(passwordLabel)
-        view.addSubview(passwordTextField)
-        view.addSubview(loginButton)
-        view.addSubview(signUpLabel)
-        view.addSubview(signUpButton)
         //////////////////////////////////////////////////////////////////////
         
         // All Constraints for Elements in Screen
@@ -199,44 +177,34 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
         
         welcomeBackLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         //constrints for the goal label
-        _ = goalLabel.anchor(top: welcomeBackLabel.bottomAnchor, left: nil, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 115.3, height: 14)
+        _ = goalLabel.anchor(top: welcomeBackLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 10, paddingLeft: 90, paddingBottom: 0, paddingRight: 90, width: 150, height: 14)
         
         goalLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        
-        //constrints for the email label
-        _ = emailLabel.anchor(top: goalLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 13.7, paddingLeft: 32, paddingBottom: 0, paddingRight: 101, width: 14.3, height: 15)
-        //constraints for the the email text field
-        
-        _ = emailTextField.anchor(top: emailLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 4.7, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 0, height: 40)
-        // constraints for the password label
-        
-        _ = passwordLabel.anchor(top: emailTextField.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 11.3, paddingLeft: 32, paddingBottom: 0, paddingRight: 101, width: 14.3, height: 15)
-        //constraints for the the password text field
-        _ = passwordTextField.anchor(top: passwordLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 4.7, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 0, height: 40)
-        //constraints for the login button
-        _ = loginButton.anchor(top: passwordTextField.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 15.3, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 0, height: 40)
-        
-        //constraints for signupLabel
-        _ = signUpLabel.anchor(top: loginButton.bottomAnchor, left: nil, bottom: nil, right: nil, paddingTop: 6.3, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 10)
-        signUpLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        // constraints for signupButton
-        
-        _ = signUpButton.anchor(top: loginButton.bottomAnchor, left: signUpLabel.rightAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 2)
-        //////////////////////////////////////////////////////////////////////
+
         
         view.backgroundColor = UIColor(r: 255, g: 255 , b: 255)
-        
-        //////////////////////////////////////////////////////////////////////
-        
         observeKeyboardNotifications()
-        
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LoginViewController.dismissKeyboard))
-        
         //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
         tap.cancelsTouchesInView = false
         
         view.addGestureRecognizer(tap)
+        setupLoginScreen()
         
+    }
+    
+    var stackView: UIStackView?
+    fileprivate func setupLoginScreen(){
+         stackView = UIStackView(arrangedSubviews: [ emailTextField, passwordTextField,loginButton])
+        view.addSubview(stackView!)
+        stackView?.distribution = .fillEqually
+        stackView?.axis = .vertical
+        stackView?.spacing = 15.0
+        stackView?.anchor(top: goalLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 150)
+        view.addSubview(signUpLabel)
+        _ = signUpLabel.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 75, paddingBottom: 5, paddingRight: 0, width: 0, height: 10)
+        view.addSubview(signUpButton)
+        _ = signUpButton.anchor(top: nil, left: signUpLabel.rightAnchor, bottom: view.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 5, paddingBottom: 10, paddingRight: 0, width: 0, height: 2)
     }
     
     //Calls this function when the tap is recognized.

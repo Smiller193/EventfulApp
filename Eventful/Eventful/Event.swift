@@ -20,17 +20,20 @@ struct  Event {
     let currentEventStreetAddress: String
     let currentEventCity: String
     let currentEventState: String
+    let currentEventDate: String?
+    let currentEventTime: String?
     let currentEventZip: Int
     //nested properties stop
     var currentAttendCount: Int
     var eventDictionary: [String: Any]{
         
-        let locationDict = ["event:street:address": currentEventStreetAddress,"event:zip": currentEventZip,
-                            "event:state": currentEventState, "event:city": currentEventCity] as [String : Any]
+        
+        let dateDict = ["start:date":currentEventDate, "start:time": currentEventTime]
         
         return ["event:name":currentEventName,"event:imageURL" : currentEventImage,
-        "event:description": currentEventDescription, "attend:count": currentAttendCount,
-        "event:location": locationDict, "event:promo": currentEventPromo ?? ""]
+                "event:description": currentEventDescription, "attend:count": currentAttendCount,
+                "event:street:address": currentEventStreetAddress,"event:zip": currentEventZip,
+                "event:state": currentEventState, "event:city": currentEventCity, "event:promo": currentEventPromo ?? "", "event:date": dateDict]
     }
     
     init(currentEventKey: String, dictionary: [String:Any]) {
@@ -40,12 +43,14 @@ struct  Event {
         self.currentEventDescription = dictionary["event:description"] as? String ?? ""
         self.currentEventPromo = dictionary["event:promo"] as? String ?? ""
         self.currentAttendCount = dictionary["attend:count"] as? Int ?? 0
-//nested properties
-        let location = dictionary["event:location"] as?  [String:Any]
-        self.currentEventStreetAddress = location?["event:street:address"] as? String ?? ""
-        self.currentEventCity = location?["event:city"] as? String ?? ""
-        self.currentEventState = location?["event:state"] as? String ?? ""
-        self.currentEventZip = location?["event:zip"] as? Int ?? 0
+        //nested properties
+        self.currentEventStreetAddress = dictionary["event:street:address"] as? String ?? ""
+        self.currentEventCity = dictionary["event:city"] as? String ?? ""
+        self.currentEventState = dictionary["event:state"] as? String ?? ""
+        self.currentEventZip = dictionary["event:zip"] as? Int ?? 0
+        let eventDate = dictionary["event:date"] as? [String: Any]
+        self.currentEventDate = eventDate?["start:date"] as? String ?? ""
+        self.currentEventTime = eventDate?["start:time"] as? String ?? ""
     }
     
     init?(snapshot: DataSnapshot) {
@@ -54,12 +59,14 @@ struct  Event {
             let currentEventImage = dict["event:imageURL"] as? String,
             let currentEventDescription = dict["event:description"] as? String,
             let currentEventPromo = dict["event:promo"] as? String,
-            let location = dict["event:location"] as?  [String:Any] ,
-            let currentEventStreetAddress = location["event:street:address"] as? String,
-         let currentEventCity = location["event:city"] as? String,
-         let currentEventState = location["event:state"] as? String,
-         let currentEventZip = location["event:zip"] as? Int,
-         let currentAttendCount = dict["attend:count"] as? Int
+            let currentEventStreetAddress = dict["event:street:address"] as? String,
+            let currentEventCity = dict["event:city"] as? String,
+            let currentEventState = dict["event:state"] as? String,
+            let currentEventZip = dict["event:zip"] as? Int,
+            let currentAttendCount = dict["attend:count"] as? Int,
+            let eventDate = dict["event:date"] as? [String: Any],
+            let currentEventDate = eventDate["start:date"] as? String,
+            let currentEventTime = eventDate["start:time"] as? String
             else { return nil }
         self.currentEventKey = snapshot.key
         self.currentEventName = currentEventName
@@ -71,7 +78,9 @@ struct  Event {
         self.currentEventZip = currentEventZip
         self.currentAttendCount = currentAttendCount
         self.currentEventPromo = currentEventPromo
-
+        self.currentEventDate = currentEventDate
+        self.currentEventTime = currentEventTime
+        
     }
     
     

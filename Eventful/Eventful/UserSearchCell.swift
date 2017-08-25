@@ -41,7 +41,7 @@ class UserSearchCell: UICollectionViewCell {
         addSubview(userNameLabel)
         userImageView.anchor(top: nil, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 0, width: 50, height: 50)
         userImageView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        
+        userImageView.layer.cornerRadius = 50/2
         userNameLabel.anchor(top: topAnchor, left: userImageView.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
         
         let separatorView = UIView()
