@@ -70,6 +70,7 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
         textField.borderStyle = .roundedRect
         textField.keyboardType = .emailAddress
         textField.borderStyle = .none
+        textField.borderActiveColor = UIColor.black
         return textField
     }()
 
@@ -83,6 +84,7 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
         textField.borderStyle = .roundedRect
         textField.isSecureTextEntry = true
         textField.borderStyle = .none
+        textField.borderActiveColor = UIColor.black
         return textField
     }()
     // creates a UIButton and transitions to a different screen after button is selected

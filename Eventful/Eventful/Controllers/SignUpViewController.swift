@@ -40,43 +40,50 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
 
     let nameTextField : HoshiTextField = {
        let nameText = HoshiTextField()
+        nameText.placeholderColor = .lightGray
         nameText.placeholder = "Username"
         nameText.layer.borderColor = UIColor.lightGray.cgColor
         nameText.layer.borderWidth = 0
         nameText.borderStyle = .none
+        nameText.borderActiveColor = UIColor.black
         return nameText
     }()
 
     // creates a email UITextField to hold the email
     let emailTextField : HoshiTextField = {
         let emaiilText = HoshiTextField()
+        emaiilText.placeholderColor = .lightGray
         emaiilText.placeholder = "Email"
         emaiilText.layer.borderColor = UIColor.lightGray.cgColor
         emaiilText.layer.borderWidth = 0
         emaiilText.borderStyle = .none
+        emaiilText.borderActiveColor = UIColor.black
         return emaiilText
     }()
 
     //creates a password UItextield
     let passwordTextField : HoshiTextField = {
         let passwordText = HoshiTextField()
+        passwordText.placeholderColor = .lightGray
         passwordText.placeholder = "Password"
         passwordText.layer.borderColor = UIColor.lightGray.cgColor
         passwordText.layer.borderWidth = 0
         passwordText.isSecureTextEntry = true
         passwordText.borderStyle = .none
-
+        passwordText.borderActiveColor = UIColor.black
         return passwordText
     }()
 
     //creates a confirm password UItextfield
     let confirmPasswordTextField : HoshiTextField = {
         let confirmPasswordText = HoshiTextField()
+        confirmPasswordText.placeholderColor = .lightGray
         confirmPasswordText.placeholder = "Confirm Password"
         confirmPasswordText.layer.borderColor = UIColor.lightGray.cgColor
         confirmPasswordText.layer.borderWidth = 0
         confirmPasswordText.isSecureTextEntry = true
         confirmPasswordText.borderStyle = .none
+        confirmPasswordText.borderActiveColor = UIColor.black
         return confirmPasswordText
     }()
     
@@ -302,7 +309,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
         stackView?.distribution = .fillEqually
         stackView?.axis = .vertical
         stackView?.spacing = 15.0
-        stackView?.anchor(top: signUp.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 250)
+        stackView?.anchor(top: signUp.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 270)
         
         
     }

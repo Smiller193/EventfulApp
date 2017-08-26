@@ -31,6 +31,7 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
         collectionView?.collectionViewLayout = grideLayout
         collectionView?.reloadData()
         navigationItem.title = "Home Page"
+        collectionView?.heroID = "homeFeed"
         collectionView?.register(CustomCell.self, forCellWithReuseIdentifier: customCellIdentifier)
         
         PostService.showEvent(location: User.current.location!) { (event) in
@@ -82,7 +83,6 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
             detailView.eventDate = allEvents[indexPath.row].currentEventDate!
             detailView.eventTime = allEvents[indexPath.row].currentEventTime!
             detailView.currentEvent = allEvents[indexPath.row]
-            
             self.navigationController?.pushViewController(detailView, animated: true)
             
         }

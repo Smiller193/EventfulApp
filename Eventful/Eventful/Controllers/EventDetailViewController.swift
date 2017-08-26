@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseDatabase
+import Hero
 
 class EventDetailViewController: UIViewController {
     
@@ -60,6 +61,21 @@ class EventDetailViewController: UIViewController {
         self.navigationController?.pushViewController(videoLauncher, animated: true)
 
     }
+    
+    lazy var currentEventTime: UILabel = {
+       let currentEventTime = UILabel()
+        currentEventTime.text = self.eventTime
+        currentEventTime.font = UIFont(name: currentEventTime.font.fontName, size: 12)
+        return currentEventTime
+    }()
+ 
+    
+    lazy var currentEventDate: UILabel = {
+        let currentEventDate = UILabel()
+        currentEventDate.text = self.eventDate
+        currentEventDate.font = UIFont(name: currentEventDate.font.fontName, size: 12)
+        return currentEventDate
+    }()
     
     
     //will show the event name
@@ -209,13 +225,14 @@ class EventDetailViewController: UIViewController {
         
         //Subviews will be added here
         view.addSubview(currentEventImage)
+        view.addSubview(currentEventDate)
 
 //        view.addSubview(attendCount)
 //        view.addSubview(commentCount)
         
         //Constraints will be added here
         _ = currentEventImage.anchor(top: view.centerYAnchor, left: nil, bottom: nil, right: nil, paddingTop: -305, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: self.view.frame.width, height: 200)
-
+       _ = currentEventDate.anchor(top: view.topAnchor, left: userInteractStackView?.rightAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 180, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 90, height: 50)
 //          _ = attendCount.anchor(top: attendingButton.bottomAnchor, left: commentCount.leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 60, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
 //        _ = commentCount.anchor(top: commentsViewButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 40, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
 //        _ = addToStoryButton.anchor(top: stackView?.bottomAnchor, left: attendingButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 30)
@@ -224,6 +241,7 @@ class EventDetailViewController: UIViewController {
         attendingButton.isSelected = (currentEvent?.isAttending)!
         setupEventDisplayScreen()
         userInteractionView()
+       // navigationController?.isHeroEnabled = true
     }
     
     fileprivate func setupEventDisplayScreen(){

@@ -45,6 +45,7 @@ PODS:
     - GoogleToolboxForMac/NSString+URLArguments (= 2.1.1)
   - GoogleToolboxForMac/NSString+URLArguments (2.1.1)
   - GTMSessionFetcher/Core (1.1.10)
+  - Hero (0.3.6)
   - SVProgressHUD (2.1.2)
   - SwiftLocation (2.0.7)
   - SwiftyCam (2.4.0)
@@ -59,6 +60,7 @@ DEPENDENCIES:
   - Firebase/Core
   - Firebase/Database
   - Firebase/Storage
+  - Hero
   - SVProgressHUD
   - SwiftLocation
   - SwiftyCam
@@ -78,12 +80,13 @@ SPEC CHECKSUMS:
   FirebaseStorage: 8110a1ed2034c8fbfd83890d2acc9cdbbd99afec
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMSessionFetcher: 30d874b96d0d76028f61fbd122801e3f030d47db
+  Hero: d3c6f4dd80cdcdbb339be64e57ae3b5c3ab9938c
   SVProgressHUD: c404a55d78acbeb7ebb78b76d3faf986475a6994
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
   SwiftyCam: cb83b9a8e181f70fb741d30cea724c6b045a4549
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   TextFieldEffects: 8706f53525f1ce51c8921b7af32237caab50c467
 
-PODFILE CHECKSUM: 8c89c7148e25dca9b528ff5119ad2d385ff563e6
+PODFILE CHECKSUM: 2cf916b419274b196b50b6f9c4bf75735607a703
 
 COCOAPODS: 1.2.1

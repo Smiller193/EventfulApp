@@ -301,6 +301,8 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
             currentEventDetailController.eventKey = event.currentEventKey
             currentEventDetailController.eventDate = event.currentEventDate!
             currentEventDetailController.eventTime = event.currentEventTime!
+            currentEventDetailController.eventPromo = event.currentEventPromo!
+            currentEventDetailController.currentEvent = event
             self.filteredEvents.removeAll(keepingCapacity: true)
             self.eventsArray.removeAll(keepingCapacity: true)
             self.collectionView?.reloadData()
@@ -335,6 +337,7 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
         self.collectionView?.reloadData()
         navigationController?.navigationBar.isHidden = true
         filteredEvents.removeAll()
+        filteredUsers.removeAll()
       //  searchBar.isHidden = false
     }
     
