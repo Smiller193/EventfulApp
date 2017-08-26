@@ -132,7 +132,7 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
       let changeName = UITextField()
         if User.current.username != ""{
             changeName.text = User.current.username
-            print(changeName.text)
+            print(changeName.text ?? "")
         }else{
             changeName.placeholder = "Username"
         }
@@ -194,11 +194,11 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
         if let userImage = profileImageTemp,let uploadData = UIImageJPEGRepresentation(userImage, 0.1){
             storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
                 if error != nil{
-                    print(error)
+                    print(error ?? "")
                     return
                 }
-                print(metadata)
-                print(metadata?.downloadURL()!.absoluteString)
+                print(metadata ?? "")
+                print(metadata?.downloadURL()!.absoluteString ?? "")
                 profilePic = (metadata?.downloadURL()!.absoluteString)!
                 print(profilePic)
                 //need to change this so I edit based off whether a value is actually added or whether a username or bio is actually changed

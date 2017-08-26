@@ -99,7 +99,7 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
         
         if comments.count > 0 {
             let value = comments.last?.commentID
-            print(value)
+            print(value ?? "")
             query = query?.queryStarting(atValue: value)
         }
         query?.queryLimited(toFirst: 2).observe(.value, with: { (snapshot) in
@@ -198,7 +198,7 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
         
         // 2
         let comment = comments[indexPath.item]
-        let poster = comment.uid
+        _ = comment.uid
         
         // 3
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -306,7 +306,7 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
     
     func handleSubmit(){
         print("submit button pressed")
-        guard let comment = commentTextField.text, comment.characters.count ?? 0 > 0 else{
+        guard let comment = commentTextField.text, comment.characters.count > 0 else{
             return
         }
         let userText = Comments(content: comment, uid: User.current.uid, profilePic: User.current.profilePic!)

@@ -49,6 +49,7 @@ PODS:
   - SwiftLocation (2.0.7)
   - SwiftyCam (2.4.0)
   - SwiftyJSON (3.1.4)
+  - TextFieldEffects (1.3.3)
 
 DEPENDENCIES:
   - Alamofire
@@ -62,6 +63,7 @@ DEPENDENCIES:
   - SwiftLocation
   - SwiftyCam
   - SwiftyJSON
+  - TextFieldEffects
 
 SPEC CHECKSUMS:
   Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
@@ -80,7 +82,8 @@ SPEC CHECKSUMS:
   SwiftLocation: 1fe2e15a5812e961496e82eeaca71d03e829e47a
   SwiftyCam: cb83b9a8e181f70fb741d30cea724c6b045a4549
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+  TextFieldEffects: 8706f53525f1ce51c8921b7af32237caab50c467
 
-PODFILE CHECKSUM: c478de5dc4c9ff26d3821eda4d02466497620931
+PODFILE CHECKSUM: 8c89c7148e25dca9b528ff5119ad2d385ff563e6
 
 COCOAPODS: 1.2.1

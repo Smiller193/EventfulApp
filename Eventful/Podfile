@@ -15,7 +15,7 @@ target 'Eventful' do
   pod ‘SVProgressHUD’
   pod "SwiftyCam"
   pod 'SwiftLocation'
-
+  pod ‘TextFieldEffects’
 
 
   # Pods for Eventful

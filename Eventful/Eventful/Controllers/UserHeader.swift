@@ -187,18 +187,27 @@ class UserProfileHeader: UICollectionViewCell {
         
     }
     
+    fileprivate func setupProfileStack(){
+        let profileStackView = UIStackView(arrangedSubviews: [profileImage])
+        addSubview(profileStackView)
+        profileStackView.anchor(top: topAnchor, left: nil, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 100, height: 100)
+        profileStackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        
+    }
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.white
-        addSubview(profileImage)
-        profileImage.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 135, paddingBottom: 0, paddingRight: 0, width: 100, height: 100)
-        profileImage.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+//        addSubview(profileImage)
+//        profileImage.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 135, paddingBottom: 0, paddingRight: 0, width: 100, height: 100)
+//        profileImage.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
 
         profileImage.layer.cornerRadius = 100/2
     
         setupToolBar()
-        
+        setupProfileStack()
+
        
         
     }

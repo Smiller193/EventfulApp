@@ -11,6 +11,7 @@ import Foundation
 import SVProgressHUD
 import SwiftLocation
 import CoreLocation
+import TextFieldEffects
 
 
 protocol SignUpViewControllerDelegate: class {
@@ -37,44 +38,45 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
     
     // creates a name UITextField to hold the name
 
-    let nameTextField : LeftPaddedTextField = {
-       let nameText = LeftPaddedTextField()
+    let nameTextField : HoshiTextField = {
+       let nameText = HoshiTextField()
         nameText.placeholder = "Username"
         nameText.layer.borderColor = UIColor.lightGray.cgColor
-        nameText.layer.borderWidth = 1
+        nameText.layer.borderWidth = 0
+        nameText.borderStyle = .none
         return nameText
     }()
 
     // creates a email UITextField to hold the email
-    let emailTextField : LeftPaddedTextField = {
-        let emaiilText = LeftPaddedTextField()
+    let emailTextField : HoshiTextField = {
+        let emaiilText = HoshiTextField()
         emaiilText.placeholder = "Email"
         emaiilText.layer.borderColor = UIColor.lightGray.cgColor
-        emaiilText.layer.borderWidth = 1
-        emaiilText.borderStyle = .roundedRect
+        emaiilText.layer.borderWidth = 0
+        emaiilText.borderStyle = .none
         return emaiilText
     }()
 
     //creates a password UItextield
-    let passwordTextField : LeftPaddedTextField = {
-        let passwordText = LeftPaddedTextField()
+    let passwordTextField : HoshiTextField = {
+        let passwordText = HoshiTextField()
         passwordText.placeholder = "Password"
         passwordText.layer.borderColor = UIColor.lightGray.cgColor
-        passwordText.layer.borderWidth = 1
+        passwordText.layer.borderWidth = 0
         passwordText.isSecureTextEntry = true
-        passwordText.borderStyle = .roundedRect
+        passwordText.borderStyle = .none
 
         return passwordText
     }()
 
     //creates a confirm password UItextfield
-    let confirmPasswordTextField : LeftPaddedTextField = {
-        let confirmPasswordText = LeftPaddedTextField()
+    let confirmPasswordTextField : HoshiTextField = {
+        let confirmPasswordText = HoshiTextField()
         confirmPasswordText.placeholder = "Confirm Password"
         confirmPasswordText.layer.borderColor = UIColor.lightGray.cgColor
-        confirmPasswordText.layer.borderWidth = 1
+        confirmPasswordText.layer.borderWidth = 0
         confirmPasswordText.isSecureTextEntry = true
-        confirmPasswordText.borderStyle = .roundedRect
+        confirmPasswordText.borderStyle = .none
         return confirmPasswordText
     }()
     
@@ -95,7 +97,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
             // first we cant to take sure that all of the fields are filled
         var bio: String = ""
         
-        var profilePic: String = ""
+        let profilePic: String = ""
             guard let username = self.nameTextField.text,
                 let confirmPassword = self.confirmPasswordTextField.text,
                 let email = self.emailTextField.text,

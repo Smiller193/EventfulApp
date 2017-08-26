@@ -53,10 +53,7 @@ class HomeViewController: UITabBarController {
         
         // array of view controllers
         viewControllers = [navController,searchNavController, profileViewNavController]
-        
-        guard let items = tabBar.items else {
-            return
-        }
+      
         
     
         

@@ -13,6 +13,8 @@ import FirebaseDatabase
 class EventDetailViewController: UIViewController {
     
     var currentEvent : Event?
+    var stackView: UIStackView?
+    var userInteractStackView: UIStackView?
 //    var users = [User]()
     let camera = CameraViewController()
     let commentsController = CommentsViewController(collectionViewLayout: UICollectionViewFlowLayout())
@@ -70,7 +72,7 @@ class EventDetailViewController: UIViewController {
     //wil be responsible for creating the address  label
     lazy var addressLabel : UILabel = {
         let currentAddressLabel = UILabel()
-        currentAddressLabel.numberOfLines = 2
+        currentAddressLabel.numberOfLines = 0
         currentAddressLabel.textColor = UIColor.lightGray
         var firstPartOfAddress = self.eventStreet  + "\n" + self.eventCity + ", " + self.eventState
         var secondPartOfAddress = firstPartOfAddress + " " + String(self.eventZip)
@@ -207,30 +209,42 @@ class EventDetailViewController: UIViewController {
         
         //Subviews will be added here
         view.addSubview(currentEventImage)
-        view.addSubview(eventNameLabel)
-        view.addSubview(addressLabel)
-        view.addSubview(descriptionLabel)
-        view.addSubview(commentsViewButton)
-        view.addSubview(attendingButton)
-        view.addSubview(attendCount)
-        view.addSubview(commentCount)
-        view.addSubview(addToStoryButton)
-        view.addSubview(viewStoryButton)
+
+//        view.addSubview(attendCount)
+//        view.addSubview(commentCount)
         
         //Constraints will be added here
         _ = currentEventImage.anchor(top: view.centerYAnchor, left: nil, bottom: nil, right: nil, paddingTop: -305, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: self.view.frame.width, height: 200)
-        _ = eventNameLabel.anchor(top: currentEventImage.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
-        _ = addressLabel.anchor(top: eventNameLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
-        _ = descriptionLabel.anchor(top: addressLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 2, paddingBottom: 0, paddingRight: 0, width: self.view.frame.width, height: 200)
-        _ = commentsViewButton.anchor(top: descriptionLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 40, paddingBottom: 0, paddingRight: 0, width: 20, height: 15)
-        _ = attendingButton.anchor(top: descriptionLabel.bottomAnchor, left: commentsViewButton.rightAnchor, bottom: nil, right: nil, paddingTop: 2, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 30)
-          _ = attendCount.anchor(top: attendingButton.bottomAnchor, left: commentCount.leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 60, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
-        _ = commentCount.anchor(top: commentsViewButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 40, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
-        _ = addToStoryButton.anchor(top: descriptionLabel.bottomAnchor, left: attendingButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 30)
-        _ = viewStoryButton.anchor(top: descriptionLabel.bottomAnchor, left: addToStoryButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
-        viewStoryButton.layer.cornerRadius = 40/2
-        attendingButton.isSelected = (currentEvent?.isAttending)!
 
+//          _ = attendCount.anchor(top: attendingButton.bottomAnchor, left: commentCount.leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 60, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
+//        _ = commentCount.anchor(top: commentsViewButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 40, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
+//        _ = addToStoryButton.anchor(top: stackView?.bottomAnchor, left: attendingButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 30)
+//        _ = viewStoryButton.anchor(top: stackView?.bottomAnchor, left: addToStoryButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
+//        viewStoryButton.layer.cornerRadius = 40/2
+        attendingButton.isSelected = (currentEvent?.isAttending)!
+        setupEventDisplayScreen()
+        userInteractionView()
+    }
+    
+    fileprivate func setupEventDisplayScreen(){
+        stackView = UIStackView(arrangedSubviews: [ eventNameLabel,addressLabel,descriptionLabel])
+        view.addSubview(stackView!)
+        stackView?.distribution = .fill
+        stackView?.axis = .vertical
+        stackView?.spacing = 5.0
+        stackView?.anchor(top: currentEventImage.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 250)
+    }
+    
+    fileprivate func userInteractionView(){
+        userInteractStackView = UIStackView(arrangedSubviews: [commentsViewButton, attendingButton, addToStoryButton, viewStoryButton])
+        viewStoryButton.heightAnchor.constraint(equalToConstant: 50)
+        viewStoryButton.widthAnchor.constraint(equalToConstant: 50)
+        viewStoryButton.layer.cornerRadius = 150/2
+        view.addSubview(userInteractStackView!)
+        userInteractStackView?.distribution = .fillEqually
+        userInteractStackView?.axis = .horizontal
+        userInteractStackView?.spacing = 10.0
+        userInteractStackView?.anchor(top: stackView?.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 0, paddingLeft: 20, paddingBottom: 0, paddingRight: 20, width: 0, height: 50)
         
     }
     

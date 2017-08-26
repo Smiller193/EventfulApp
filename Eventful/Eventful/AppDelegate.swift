@@ -74,10 +74,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate {
     func configureInitialRootViewController(for window: UIWindow?) {
         print("Look for current user here")
-        print(Auth.auth().currentUser)
+        print(Auth.auth().currentUser ?? "")
         let defaults = UserDefaults.standard
         let initialViewController: UIViewController
-        print(Auth.auth().currentUser)
+        print(Auth.auth().currentUser ?? "")
         if Auth.auth().currentUser != nil,
             let userData = defaults.object(forKey: "currentUser") as? Data,
             let user = NSKeyedUnarchiver.unarchiveObject(with: userData) as? User {

@@ -60,7 +60,7 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let customCell = collectionView.dequeueReusableCell(withReuseIdentifier: customCellIdentifier, for: indexPath) as! CustomCell
         let imageURL = URL(string: allEvents[indexPath.item].currentEventImage)
-        print(imageURL)
+        print(imageURL ?? "")
         customCell.sampleImage.af_setImage(withURL: imageURL!)
         return customCell
     }

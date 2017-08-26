@@ -31,7 +31,6 @@
 		07437F241F267CA900CE728B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07437F221F267CA900CE728B /* LaunchScreen.storyboard */; };
 		07437F2C1F267E1300CE728B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07437F2B1F267E1300CE728B /* LoginViewController.swift */; };
 		07437F311F27D3EB00CE728B /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07437F301F27D3EB00CE728B /* SignUpViewController.swift */; };
-		07437F391F28D4AD00CE728B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07437F381F28D4AD00CE728B /* Info.plist */; };
 		07437F3B1F28D4B900CE728B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07437F3A1F28D4B900CE728B /* GoogleService-Info.plist */; };
 		07437F3D1F28D4C500CE728B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07437F3C1F28D4C500CE728B /* Extensions.swift */; };
 		07437F3F1F28D52200CE728B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07437F3E1F28D52200CE728B /* Default-568h@2x.png */; };
@@ -406,7 +405,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07437F391F28D4AD00CE728B /* Info.plist in Resources */,
 				07437F241F267CA900CE728B /* LaunchScreen.storyboard in Resources */,
 				07437F3B1F28D4B900CE728B /* GoogleService-Info.plist in Resources */,
 				07437F1F1F267CA900CE728B /* Main.storyboard in Resources */,

@@ -9,7 +9,7 @@
 import UIKit
 import Foundation
 import SVProgressHUD
-
+import TextFieldEffects
 
 protocol LoginViewControllerDelegate: class {
     func finishLoggingIn()
@@ -61,24 +61,28 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
     
     // creates a UITextField
     
-    let emailTextField : LeftPaddedTextField = {
-        let textField = LeftPaddedTextField()
+    let emailTextField : HoshiTextField = {
+        let textField = HoshiTextField()
+        textField.placeholderColor = .lightGray
         textField.placeholder = "Email"
         textField.layer.borderColor = UIColor.lightGray.cgColor
-        textField.layer.borderWidth = 1
+        textField.layer.borderWidth = 0
         textField.borderStyle = .roundedRect
         textField.keyboardType = .emailAddress
+        textField.borderStyle = .none
         return textField
     }()
 
     // creates a UITextField
-    let passwordTextField : LeftPaddedTextField = {
-        let textField = LeftPaddedTextField()
+    let passwordTextField : HoshiTextField = {
+        let textField = HoshiTextField()
+        textField.placeholderColor = .lightGray
         textField.placeholder = "Password"
         textField.layer.borderColor = UIColor.lightGray.cgColor
-        textField.layer.borderWidth = 1
+        textField.layer.borderWidth = 0
         textField.borderStyle = .roundedRect
         textField.isSecureTextEntry = true
+        textField.borderStyle = .none
         return textField
     }()
     // creates a UIButton and transitions to a different screen after button is selected
@@ -173,11 +177,11 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
         nameOfAppLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         //constrints for the welcome back label
-        _ = welcomeBackLabel.anchor(top: nameOfAppLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 15.7, paddingLeft: 120, paddingBottom: 0, paddingRight: 120, width: 0, height: 12.7)
+        _ = welcomeBackLabel.anchor(top: nameOfAppLabel.bottomAnchor, left: nil, bottom: nil, right: nil, paddingTop: 15.7, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 12.7)
         
         welcomeBackLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         //constrints for the goal label
-        _ = goalLabel.anchor(top: welcomeBackLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 10, paddingLeft: 90, paddingBottom: 0, paddingRight: 90, width: 150, height: 14)
+        _ = goalLabel.anchor(top: welcomeBackLabel.bottomAnchor, left: nil, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 180, height: 14)
         
         goalLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 

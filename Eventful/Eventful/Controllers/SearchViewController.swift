@@ -136,10 +136,10 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
         print(query)
         query.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let dictionary = snapshot.value as? [String: Any] else{
-                print(snapshot.value)
+                print(snapshot.value ?? "")
                 return
             }
-            print(snapshot.value)
+            print(snapshot.value ?? "")
             dictionary.forEach({ (key,value) in
                 print(key,value)
                 guard let eventDictionary = value as? [String: Any] else{
@@ -310,7 +310,7 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
         case 1:
             navigationController?.navigationBar.isHidden = false
             let user = filteredUsers[indexPath.item]
-            print(user.username)
+            print(user.username ?? "")
             userProfileController.userId = user.uid
             userProfileController.navigationItem.title = user.username
             userProfileController.navigationItem.hidesBackButton = true
