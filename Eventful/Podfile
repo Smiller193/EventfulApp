@@ -16,7 +16,7 @@ target 'Eventful' do
   pod "SwiftyCam"
   pod 'SwiftLocation'
   pod ‘TextFieldEffects’
-  pod ‘Hero’
+  pod 'EZSwipeController'
 
   # Pods for Eventful
 

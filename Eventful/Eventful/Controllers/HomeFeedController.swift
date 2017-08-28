@@ -31,7 +31,6 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
         collectionView?.collectionViewLayout = grideLayout
         collectionView?.reloadData()
         navigationItem.title = "Home Page"
-        collectionView?.heroID = "homeFeed"
         collectionView?.register(CustomCell.self, forCellWithReuseIdentifier: customCellIdentifier)
         
         PostService.showEvent(location: User.current.location!) { (event) in

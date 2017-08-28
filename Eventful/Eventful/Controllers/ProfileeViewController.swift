@@ -50,7 +50,7 @@ collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UIC
         print("123")
    
          userEventRef = Database.database().reference().child("users").child(uid).child("Attending")
-        userEventRef?.observe(.value, with: { (snapshot) in
+        userEventRef?.observe(.childAdded, with: { (snapshot) in
             guard let dictionaries = snapshot.value as? [String: Any] else{
                 return
             }

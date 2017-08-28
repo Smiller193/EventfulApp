@@ -9,11 +9,27 @@
 import UIKit
 import Firebase
 import FirebaseDatabase
-import Hero
 
 class EventDetailViewController: UIViewController {
     
-    var currentEvent : Event?
+    var currentEvent : Event?{
+        didSet{
+            let imageURL = URL(string: eventImage)
+
+            currentEventImage.af_setImage(withURL: imageURL!)
+            currentEventTime.text = eventTime
+            currentEventDate.text = self.eventDate
+            eventNameLabel.text = self.eventName.capitalized
+            let firstPartOfAddress = self.eventStreet  + "\n" + self.eventCity + ", " + self.eventState
+            let secondPartOfAddress = firstPartOfAddress + " " + String(self.eventZip)
+            addressLabel.text = secondPartOfAddress
+            descriptionLabel.text = self.eventDescription
+            descriptionLabel.font = UIFont(name: (descriptionLabel.font?.fontName)!, size: 12)
+            navigationItem.title = eventName.capitalized
+
+
+        }
+    }
     var stackView: UIStackView?
     var userInteractStackView: UIStackView?
 //    var users = [User]()
@@ -39,8 +55,8 @@ class EventDetailViewController: UIViewController {
     //
     lazy var currentEventImage : UIImageView = {
         let currentEvent = UIImageView()
-        let imageURL = URL(string: self.eventImage)
-        currentEvent.af_setImage(withURL: imageURL!)
+        //let imageURL = URL(string: self.eventImage)
+       // currentEvent.af_setImage(withURL: imageURL!)
         currentEvent.clipsToBounds = true
         currentEvent.translatesAutoresizingMaskIntoConstraints = false
         currentEvent.contentMode = .scaleAspectFit
@@ -51,6 +67,8 @@ class EventDetailViewController: UIViewController {
         currentEvent.addGestureRecognizer(tapGestureRecognizer)
         return currentEvent
     }()
+    
+    
     
     
     func handlePromoVid(){
@@ -64,7 +82,7 @@ class EventDetailViewController: UIViewController {
     
     lazy var currentEventTime: UILabel = {
        let currentEventTime = UILabel()
-        currentEventTime.text = self.eventTime
+//        currentEventTime.text = self.eventTime
         currentEventTime.font = UIFont(name: currentEventTime.font.fontName, size: 12)
         return currentEventTime
     }()
@@ -72,7 +90,7 @@ class EventDetailViewController: UIViewController {
     
     lazy var currentEventDate: UILabel = {
         let currentEventDate = UILabel()
-        currentEventDate.text = self.eventDate
+//        currentEventDate.text = self.eventDate
         currentEventDate.font = UIFont(name: currentEventDate.font.fontName, size: 12)
         return currentEventDate
     }()
@@ -81,7 +99,7 @@ class EventDetailViewController: UIViewController {
     //will show the event name
     lazy var eventNameLabel: UILabel = {
         let currentEventName = UILabel()
-        currentEventName.text = self.eventName.capitalized
+//        currentEventName.text = self.eventName.capitalized
         currentEventName.translatesAutoresizingMaskIntoConstraints = false
         return currentEventName
     }()
@@ -90,9 +108,9 @@ class EventDetailViewController: UIViewController {
         let currentAddressLabel = UILabel()
         currentAddressLabel.numberOfLines = 0
         currentAddressLabel.textColor = UIColor.lightGray
-        var firstPartOfAddress = self.eventStreet  + "\n" + self.eventCity + ", " + self.eventState
-        var secondPartOfAddress = firstPartOfAddress + " " + String(self.eventZip)
-        currentAddressLabel.text = secondPartOfAddress
+//        var firstPartOfAddress = self.eventStreet  + "\n" + self.eventCity + ", " + self.eventState
+//        var secondPartOfAddress = firstPartOfAddress + " " + String(self.eventZip)
+      //  currentAddressLabel.text = secondPartOfAddress
         currentAddressLabel.font = UIFont(name: currentAddressLabel.font.fontName, size: 12)
         return currentAddressLabel
     }()
@@ -103,8 +121,8 @@ class EventDetailViewController: UIViewController {
         currentDescriptionLabel.textContainer.maximumNumberOfLines = 0
         currentDescriptionLabel.textColor = UIColor.black
         currentDescriptionLabel.textAlignment = .justified
-        currentDescriptionLabel.text = self.eventDescription
-        currentDescriptionLabel.font = UIFont(name: (currentDescriptionLabel.font?.fontName)!, size: 12)
+//        currentDescriptionLabel.text = self.eventDescription
+//        currentDescriptionLabel.font = UIFont(name: (currentDescriptionLabel.font?.fontName)!, size: 12)
         return currentDescriptionLabel
     }()
     
@@ -128,6 +146,7 @@ class EventDetailViewController: UIViewController {
         self.navigationController?.pushViewController(commentsController, animated: false)
         
     }
+    
     
     lazy var attendingButton: UIButton = {
         let attendButton = UIButton(type: .system)
@@ -218,7 +237,6 @@ class EventDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
-        navigationItem.title = eventName.capitalized
         self.navigationItem.hidesBackButton = true
         let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
         self.navigationItem.leftBarButtonItem = backButton
@@ -241,6 +259,7 @@ class EventDetailViewController: UIViewController {
         attendingButton.isSelected = (currentEvent?.isAttending)!
         setupEventDisplayScreen()
         userInteractionView()
+        
        // navigationController?.isHeroEnabled = true
     }
     
@@ -280,6 +299,7 @@ class EventDetailViewController: UIViewController {
         })
         
     }
+    
     
     func GoBack(){
         _ = self.navigationController?.popViewController(animated: false)

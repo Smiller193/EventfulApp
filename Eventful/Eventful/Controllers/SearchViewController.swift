@@ -303,8 +303,8 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
             currentEventDetailController.eventTime = event.currentEventTime!
             currentEventDetailController.eventPromo = event.currentEventPromo!
             currentEventDetailController.currentEvent = event
-            self.filteredEvents.removeAll(keepingCapacity: true)
-            self.eventsArray.removeAll(keepingCapacity: true)
+            self.filteredEvents.removeAll()
+            self.eventsArray.removeAll()
             self.collectionView?.reloadData()
             navigationController?.pushViewController(currentEventDetailController, animated: true)
             navigationController?.navigationBar.isHidden = false

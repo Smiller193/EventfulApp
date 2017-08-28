@@ -309,7 +309,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
         stackView?.distribution = .fillEqually
         stackView?.axis = .vertical
         stackView?.spacing = 15.0
-        stackView?.anchor(top: signUp.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 270)
+        stackView?.anchor(top: signUp.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 350)
         
         
     }
