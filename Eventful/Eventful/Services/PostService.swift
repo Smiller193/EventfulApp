@@ -35,6 +35,7 @@ struct PostService {
     static func showEvent(pageSize: UInt, lastPostKey: String? = nil,completion: @escaping ([Event]) -> Void) {
         //getting firebase root directory
        // print(lastPostKey)
+        print("came here")
         var currentEvents = [Event]()
         let eventsByLocationRef = Database.database().reference().child("eventsbylocation").child(User.current.location!)
         
@@ -52,8 +53,12 @@ struct PostService {
             }
            
             allObjects.forEach({ (snapshot) in
-            //  print(snapshot.value)
-                EventService.show(forEventKey: snapshot.value as! String, completion: { (event) in
+             print(snapshot.value)
+                guard let key: String? = snapshot.value as! String else {
+                    return
+                }
+                print(key)
+                EventService.show(forEventKey: key!, completion: { (event) in
                   //  print(event)
 //                    currentEvents.append(.init(currentEventKey: snapshot.value as! String, dictionary: (event?.eventDictionary)!))
                     currentEvents.append(event!)

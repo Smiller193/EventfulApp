@@ -1,10 +1,3 @@
-//
-//  PaginationHelper.swift
-//  Savvy
-//
-//  Created by Elmer Astudillo on 8/30/17.
-//  Copyright © 2017 Elmer Astudillo. All rights reserved.
-//
 
 import Foundation
 
@@ -51,7 +44,7 @@ class PaginationHelper<T : Keyed>
     // MARK: - Init
     //    Can change the default page size for our helper
     //    Set the service method that will be paginated and return data
-    init(pageSize: UInt = 5, serviceMethod: @escaping (UInt, String?, @escaping (([T]) -> Void)) -> Void) {
+    init(pageSize: UInt = 1, serviceMethod: @escaping (UInt, String?, @escaping (([T]) -> Void)) -> Void) {
         self.pageSize = pageSize
         self.serviceMethod = serviceMethod
     }

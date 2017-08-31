@@ -14,7 +14,9 @@ import FirebaseAuth
 struct EventService {
     
     static func show(forEventKey eventKey: String, completion: @escaping (Event?) -> Void) {
+        print(eventKey)
         let ref = Database.database().reference().child("events").child(eventKey)
+        print(eventKey)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
            print(snapshot.value ?? "")
             guard let event = Event(snapshot: snapshot) else {
