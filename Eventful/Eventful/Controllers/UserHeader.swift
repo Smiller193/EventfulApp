@@ -99,6 +99,14 @@ class UserProfileHeader: UICollectionViewCell {
         return follow
     }()
     
+    lazy var backButton: UIButton = {
+       let backButton = UIButton(type: .system)
+        backButton.setImage(UIImage(named: "icons8-Back-64"), for: .normal)
+
+        return backButton
+    }()
+    
+  
     
     fileprivate func setupUserInteraction (){
         
@@ -118,7 +126,7 @@ class UserProfileHeader: UICollectionViewCell {
             userStackView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 15, paddingBottom: 0, paddingRight: 0, width: 0, height: 90)
             
         } else{
-             let userStackView = UIStackView(arrangedSubviews: [followButton])
+             let userStackView = UIStackView(arrangedSubviews: [backButton, followButton])
             userStackView.distribution = .fillEqually
             userStackView.axis = .vertical
             addSubview(userStackView)

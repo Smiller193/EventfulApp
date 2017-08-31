@@ -81,15 +81,81 @@ struct UserService {
     
     
     // will observe the user object in the database for any changes and make sure that they are updated
-    static func observeProfile(for uid: String, completion: @escaping (DatabaseReference, User?) -> Void) -> DatabaseHandle {
-        let userRef = Database.database().reference().child("users").child(uid)
+    static func observeProfile(for user: User, completion: @escaping (DatabaseReference, User?, [Event]) -> Void) -> DatabaseHandle {
+        // 1
+        let userRef = Database.database().reference().child("users").child(user.uid)
+        
+        // 2
         return userRef.observe(.value, with: { snapshot in
+            // 3
             guard let user = User(snapshot: snapshot) else {
-                return completion(userRef, nil)
+                return completion(userRef, nil, [])
             }
-            completion(userRef, user)
+            
+          //  print(user)
+            // 4
+            Events(for: user, completion: { events in
+                // 5
+                completion(userRef, user, events)
+            })
         })
     }
+    
+    
+    static func Events(for user: User, completion: @escaping ([Event]) -> Void)
+    {
+        var currentEvents = [Event]()
+
+        //Getting firebase root directory
+        let ref = Database.database().reference().child("users").child(user.uid).child("Attending")
+        
+   
+//        let query = ref.queryOrdered(byChild: "Attending")
+        ref.observe(.value, with: { (snapshot) in
+         //   print(snapshot)
+            
+            guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else {
+                return completion([])
+            }
+            
+            guard let eventDictionary = snapshot.value as? [String: Any] else {
+                return
+            }
+            
+          //  print(snapshot)
+            
+            eventDictionary.forEach({ (key,value) in
+             //   print(key)
+             //   print(value)
+                EventService.show(forEventKey: key , completion: { (event) in
+                     currentEvents.append(.init(currentEventKey: key , dictionary: (event?.eventDictionary)!))
+                  //  print(currentEvents)
+                    completion(currentEvents)
+                })
+            })
+//            
+//            let events: [Event] =
+//                snapshot
+//                    .reversed()      // Reverses array
+//                    .flatMap {       // Returns array with non nil values
+//                        guard let event = Event(snapshot: $0)
+//                            else { return nil }
+//                        
+//          
+//                        return event
+//            }
+//            completion(events)
+        
+        })
+    }
+    
+    
+  
+
+
+
+    
+    
     
     //shows the data at the user endpoint
     //observeSingleEvent(of:with:) will only trigger the event callback once. This is useful for reading data that only needs to be loaded once and isn't expected to change

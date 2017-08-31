@@ -10,8 +10,8 @@ import Foundation
 import FirebaseDatabase.FIRDataSnapshot
 
 
-struct  Event {
-    let currentEventKey: String
+struct  Event: Keyed {
+    var key: String?
     let currentEventName: String
     let currentEventImage: String
     let currentEventPromo: String?
@@ -26,7 +26,6 @@ struct  Event {
     //nested properties stop
     var currentAttendCount: Int
     var isAttending = false
-
     var eventDictionary: [String: Any]{
         
         
@@ -39,7 +38,7 @@ struct  Event {
     }
     
     init(currentEventKey: String, dictionary: [String:Any]) {
-        self.currentEventKey = currentEventKey
+        self.key = currentEventKey
         self.currentEventName = dictionary["event:name"] as? String ?? ""
         self.currentEventImage = dictionary["event:imageURL"] as? String ?? ""
         self.currentEventDescription = dictionary["event:description"] as? String ?? ""
@@ -70,7 +69,7 @@ struct  Event {
             let currentEventDate = eventDate["start:date"] as? String,
             let currentEventTime = eventDate["start:time"] as? String
             else { return nil }
-        self.currentEventKey = snapshot.key
+        self.key = snapshot.key
         self.currentEventName = currentEventName
         self.currentEventImage = currentEventImage
         self.currentEventDescription = currentEventDescription
@@ -82,9 +81,10 @@ struct  Event {
         self.currentEventPromo = currentEventPromo
         self.currentEventDate = currentEventDate
         self.currentEventTime = currentEventTime
-        
     }
     
+    
+ 
     
     
 }

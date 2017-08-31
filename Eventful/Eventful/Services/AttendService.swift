@@ -14,7 +14,7 @@ import FirebaseAuth
 struct AttendService {
     static func create(for event: Event?, success: @escaping (Bool) -> Void) {
         // 1
-        guard let key = event?.currentEventKey else {
+        guard let key = event?.key else {
             return success(false)
         }
         guard let uid = Auth.auth().currentUser?.uid else{
@@ -46,7 +46,7 @@ struct AttendService {
             guard let attendCountDictionary = snapshot.value as? [String: Any] else{
                 return
             }
-            print(snapshot.value)
+            print(snapshot.value ?? "")
             
             numberAttending = attendCountDictionary.count
             print(numberAttending)
@@ -64,7 +64,7 @@ struct AttendService {
     
     
     static func delete(for event: Event?, success: @escaping (Bool) -> Void) {
-        guard let key = event?.currentEventKey else {
+        guard let key = event?.key else {
             return success(false)
         }
         
@@ -106,7 +106,7 @@ struct AttendService {
             return completion(false)
         }
         
-        let attendRef = Database.database().reference().child("Attending").child(event.currentEventKey)
+        let attendRef = Database.database().reference().child("Attending").child(event.key!)
         attendRef.queryEqual(toValue: nil, childKey: User.current.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             if let _ = snapshot.value as? [String : Bool] {
                 completion(true)

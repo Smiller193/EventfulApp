@@ -20,107 +20,53 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
     let cellID2 = "newCellID"
     let userProfileController = ProfileeViewController(collectionViewLayout: UICollectionViewFlowLayout())
     let currentEventDetailController = EventDetailViewController()
+    var emptyLabel: UILabel?
     
     //ui search bar that will allow you to type in text and filter out results
-    //most of the code here is straight forward 
+    //most of the code here is straight forward
     //must set delegate to self to get control over certain aspects of search bar
-//    lazy var searchBar: UISearchBar = {
-//        let sb = UISearchBar()
-//        sb.placeholder = "Enter Event"
-//        sb.barTintColor = .gray
-//        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = UIColor.rgb(red: 230, green: 230, blue: 230)
-//        sb.delegate = self
-//        return sb
-//    }()
-    
-
-    
-    //detects when search bar text is done editing
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        print("Stopped Editing")
-        print(searchBar.text ?? "")
-        guard let searchText = searchBar.text else{
-            return
-        }
-        let lowerText = searchText.lowercased()
-        
-        if scopeIndex == 0 {
-            fetchEvents(searchString: lowerText)
-        }else if scopeIndex == 1{
-            fetchUsers(stringValue: lowerText)
-        }
-       
-       
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
-    {
-        if searchBar.text?.isEmpty == true
-        {
-            filteredEvents.removeAll()
-            self.collectionView?.reloadData()
-        }
-    }
-
+    //    lazy var searchBar: UISearchBar = {
+    //        let sb = UISearchBar()
+    //        sb.placeholder = "Enter Event"
+    //        sb.barTintColor = .gray
+    //        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = UIColor.rgb(red: 230, green: 230, blue: 230)
+    //        sb.delegate = self
+    //        return sb
+    //    }()
     
     
     
-//    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-       return CGSize(width: view.frame.width, height: 80)
-    }
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-       let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerID", for: indexPath) as! SearchHeader
-        header.searchBar.delegate = self
-        return header
-    }
-    
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        //Changes the first responder to the search bar
-        searchBar.resignFirstResponder()
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        switch selectedScope {
-        case 0:
-            searchBar.text = ""
-            self.scopeIndex = selectedScope
-            self.filteredEvents.removeAll()
-            self.collectionView?.reloadData()
-            break
-        case 1:
-            searchBar.text = ""
-            self.scopeIndex = selectedScope
-            self.filteredUsers.removeAll()
-            self.collectionView?.reloadData()
-            break
-        default:
-            break
-        }
-    }
-    
-    // this function will detect change in the search bar and filter out the results returned based off what is entered in the search bar
-  
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView?.backgroundColor = .white
-        
+        self.collectionView?.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
         //navigationController?.navigationBar.addSubview(searchBar)
+        //        collectionView?.emptyDataSetSource = self
+        //        collectionView?.emptyDataSetDelegate = self
         collectionView?.register(SearchHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerID")
-        
-        self.navigationController?.navigationBar.isHidden = true
-       // searchBar.anchor(top: navBar?.topAnchor, left: navBar?.leftAnchor, bottom: navBar?.bottomAnchor, right: navBar?.rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 8, width: 0, height: 0)
+        //        self.navigationController?.navigationBar.isHidden = true
+        // searchBar.anchor(top: navBar?.topAnchor, left: navBar?.leftAnchor, bottom: navBar?.bottomAnchor, right: navBar?.rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 8, width: 0, height: 0)
         //will register a cell to the screen
         //notice the EventSearchCell that is one of the parameters
         //that is there so it creates the cell in the way that I want it to based off the EventSearchCell Swift File
-     self.collectionView?.register(EventSearchCell.self, forCellWithReuseIdentifier: cellId)
+        
+        self.collectionView?.register(EventSearchCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.alwaysBounceVertical = true
-        collectionView?.keyboardDismissMode = .onDrag 
-     self.collectionView?.register(UserSearchCell.self, forCellWithReuseIdentifier: cellID2)
-
+        collectionView?.keyboardDismissMode = .onDrag
+        self.collectionView?.register(UserSearchCell.self, forCellWithReuseIdentifier: cellID2)
+        
     }
+    
+
+    func spaceHeight(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
+        return 200.0
+    }
+    
+    func backgroundColor(forEmptyDataSet scrollView: UIScrollView!) -> UIColor! {
+        return UIColor.white
+    }
+    
     //two arrays both of type Event
     //one for appending the results of the database search
     //one for grabbing the results of the search bar
@@ -148,7 +94,7 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
                 let events = Event(currentEventKey: key, dictionary:eventDictionary)
                 
                 let filteredEvents = self.eventsArray.filter { (event) -> Bool in
-                    return event.currentEventKey == events.currentEventKey
+                    return event.key == events.key
                 }
                 
                 if filteredEvents.count == 0 {
@@ -167,12 +113,88 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
                 
                 
             })
-          
-
+            
+            
         }) { (err) in
             print("Failed to fetch event data", err)
         }
+    }
+    
+    
+    
+    //detects when search bar text is done editing
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        print("Stopped Editing")
+        print(searchBar.text ?? "")
+        guard let searchText = searchBar.text else{
+            return
         }
+        let lowerText = searchText.lowercased()
+        
+        if scopeIndex == 0 {
+            fetchEvents(searchString: lowerText)
+        }else if scopeIndex == 1{
+            fetchUsers(stringValue: lowerText)
+        }
+        
+        
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
+    {
+        if searchBar.text?.isEmpty == true
+        {
+            filteredEvents.removeAll()
+            self.collectionView?.reloadData()
+        }
+    }
+    
+    
+    
+    
+    //
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: view.frame.width, height: 80)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerID", for: indexPath) as! SearchHeader
+        header.searchBar.delegate = self
+        return header
+    }
+    
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        //Changes the first responder to the search bar
+        searchBar.resignFirstResponder()
+    }
+    
+    
+    
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        switch selectedScope {
+        case 0:
+            searchBar.text = ""
+            self.scopeIndex = selectedScope
+            self.filteredEvents.removeAll()
+            self.filteredUsers.removeAll()
+            self.collectionView?.reloadData()
+            break
+        case 1:
+            searchBar.text = ""
+            self.scopeIndex = selectedScope
+            self.filteredUsers.removeAll()
+            self.filteredEvents.removeAll()
+            self.collectionView?.reloadData()
+            break
+        default:
+            break
+        }
+    }
+    
+    // this function will detect change in the search bar and filter out the results returned based off what is entered in the search bar
+    
+    
     
     
     
@@ -183,19 +205,6 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
         
         //create a reference to the location in the database that you want to pull from and observe the value there
         let ref = Database.database().reference().child("users")
-        // this will retur a snapshot with all the data at that location in the database and cast the results as a dictionary for later use
-        
-        
-        // Originally how it worked
-        //ref.observe(.value, with: { (snapshot) in
-        //print(snapshot)
-        //let query = ref.queryOrdered(byChild: "posts/title").queryEqual(toValue:value)
-        //        print(query)
-        
-        //        let startString = "Made"
-        
-        //        ref.queryOrdered(byChild: "title").queryEqual(toValue:stringValue)
-        //            .queryLimited(toFirst: 10).observeSingleEvent(of: .value, with: { (snapshot : DataSnapshot) in
         
         let endString = stringValue + "\\uf8ff"
         ref.queryOrdered(byChild: "username").queryStarting(atValue: stringValue).queryEnding(atValue: endString).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -271,26 +280,47 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
             print("Failed to fetch posts for search")
         }
     }
-
-
+    
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         //make sure that the screen is loaded with the proper number of cells when you first go to the screen
-        switch scopeIndex {
-        case 0:
-            return filteredEvents.count
-        case 1:
-            return filteredUsers.count
-        default:
+        if filteredEvents.isEmpty == false || filteredUsers.isEmpty == false
+        {
+            switch scopeIndex {
+            case 0:
+                self.collectionView?.backgroundView = nil
+                return filteredEvents.count
+            case 1:
+                self.collectionView?.backgroundView = nil
+                return filteredUsers.count
+            default:
+                return 0
+            }
+        } else
+        {
+            // var emptyLabel = UILabel(frame: CGRect(0, 0, self.view.bounds.size.width, self.view.bounds.size.height))
+            emptyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height))
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineBreakMode = .byWordWrapping
+            paragraph.alignment = .center
+            
+            let attributes: [String: Any] = [NSFontAttributeName: UIFont.systemFont(ofSize: 14.0), NSForegroundColorAttributeName: UIColor.lightGray, NSParagraphStyleAttributeName: paragraph]
+            let myAttrString = NSAttributedString(string:  "Search For Events And Users Near You", attributes: attributes)
+            emptyLabel?.attributedText = myAttrString
+            emptyLabel?.textAlignment = .center
+            self.collectionView?.backgroundView = emptyLabel
+            
             return 0
-        }    }
+        }
+    }
+    
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        searchBar.isHidden = true
-//        searchBar.resignFirstResponder()
+        //        searchBar.isHidden = true
+        //        searchBar.resignFirstResponder()
         switch scopeIndex {
         case 0:
             let event = filteredEvents[indexPath.item]
-            print(event.currentEventKey)
             currentEventDetailController.eventImage = event.currentEventImage
             currentEventDetailController.eventName = event.currentEventName
             currentEventDetailController.eventDescription = event.currentEventDescription
@@ -298,7 +328,7 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
             currentEventDetailController.eventCity = event.currentEventCity
             currentEventDetailController.eventState = event.currentEventState
             currentEventDetailController.eventZip = event.currentEventZip
-            currentEventDetailController.eventKey = event.currentEventKey
+            currentEventDetailController.eventKey = event.key!
             currentEventDetailController.eventDate = event.currentEventDate!
             currentEventDetailController.eventTime = event.currentEventTime!
             currentEventDetailController.eventPromo = event.currentEventPromo!
@@ -306,24 +336,26 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
             self.filteredEvents.removeAll()
             self.eventsArray.removeAll()
             self.collectionView?.reloadData()
-            navigationController?.pushViewController(currentEventDetailController, animated: true)
+            present(currentEventDetailController, animated: true, completion: nil)
+            //  navigationController?.pushViewController(currentEventDetailController, animated: true)
             navigationController?.navigationBar.isHidden = false
             break
         case 1:
             navigationController?.navigationBar.isHidden = false
             let user = filteredUsers[indexPath.item]
             print(user.username ?? "")
-            userProfileController.userId = user.uid
+            userProfileController.user = user
             userProfileController.navigationItem.title = user.username
             userProfileController.navigationItem.hidesBackButton = true
             let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
             userProfileController.navigationItem.leftBarButtonItem = backButton
-            navigationController?.pushViewController(userProfileController, animated: true)
+            present(userProfileController, animated: true, completion: nil)
+            //            navigationController?.pushViewController(userProfileController, animated: true)
             break
         default:
             break
         }
-   
+        
     }
     
     func GoBack(){
@@ -333,19 +365,19 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-       // searchBar.text = ""
+        // searchBar.text = ""
         self.collectionView?.reloadData()
         navigationController?.navigationBar.isHidden = true
         filteredEvents.removeAll()
         filteredUsers.removeAll()
-      //  searchBar.isHidden = false
+        //  searchBar.isHidden = false
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         //creates a cell and cast it as the Appropriate type
         let eventCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! EventSearchCell
         let userCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID2, for: indexPath) as! UserSearchCell
-
+        
         switch scopeIndex {
         case 0:
             eventCell.event = filteredEvents[indexPath.row]

@@ -17,7 +17,8 @@ target 'Eventful' do
   pod 'SwiftLocation'
   pod ‘TextFieldEffects’
   pod 'EZSwipeController'
+pod 'DZNEmptyDataSet'
 
-  # Pods for Eventful
+   # Pods for Eventful
 
 end

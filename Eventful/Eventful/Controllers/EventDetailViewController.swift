@@ -15,7 +15,7 @@ class EventDetailViewController: UIViewController {
     var currentEvent : Event?{
         didSet{
             let imageURL = URL(string: eventImage)
-
+            
             currentEventImage.af_setImage(withURL: imageURL!)
             currentEventTime.text = eventTime
             currentEventDate.text = self.eventDate
@@ -26,17 +26,17 @@ class EventDetailViewController: UIViewController {
             descriptionLabel.text = self.eventDescription
             descriptionLabel.font = UIFont(name: (descriptionLabel.font?.fontName)!, size: 12)
             navigationItem.title = eventName.capitalized
-
-
+            
+            
         }
     }
     var stackView: UIStackView?
     var userInteractStackView: UIStackView?
-//    var users = [User]()
+    //    var users = [User]()
     let camera = CameraViewController()
     let commentsController = CommentsViewController(collectionViewLayout: UICollectionViewFlowLayout())
     let eventStory = StoriesViewController()
-
+    
     
     //variables that will hold data sent in through previous event controller
     var eventImage = ""
@@ -51,12 +51,12 @@ class EventDetailViewController: UIViewController {
     var eventPromo = ""
     var eventTime = ""
     
-    var currentEventAttendCount = 0 
+    var currentEventAttendCount = 0
     //
     lazy var currentEventImage : UIImageView = {
         let currentEvent = UIImageView()
         //let imageURL = URL(string: self.eventImage)
-       // currentEvent.af_setImage(withURL: imageURL!)
+        // currentEvent.af_setImage(withURL: imageURL!)
         currentEvent.clipsToBounds = true
         currentEvent.translatesAutoresizingMaskIntoConstraints = false
         currentEvent.contentMode = .scaleAspectFit
@@ -76,21 +76,23 @@ class EventDetailViewController: UIViewController {
         let url = URL(string: eventPromo)
         let videoLauncher = VideoViewController(videoURL: url!)
         videoLauncher.nextButton.isHidden = true
-        self.navigationController?.pushViewController(videoLauncher, animated: true)
-
+        present(videoLauncher, animated: true, completion: nil)
+        
+        //        self.navigationController?.pushViewController(videoLauncher, animated: true)
+        
     }
     
     lazy var currentEventTime: UILabel = {
-       let currentEventTime = UILabel()
-//        currentEventTime.text = self.eventTime
+        let currentEventTime = UILabel()
+        //        currentEventTime.text = self.eventTime
         currentEventTime.font = UIFont(name: currentEventTime.font.fontName, size: 12)
         return currentEventTime
     }()
- 
+    
     
     lazy var currentEventDate: UILabel = {
         let currentEventDate = UILabel()
-//        currentEventDate.text = self.eventDate
+        //        currentEventDate.text = self.eventDate
         currentEventDate.font = UIFont(name: currentEventDate.font.fontName, size: 12)
         return currentEventDate
     }()
@@ -99,7 +101,7 @@ class EventDetailViewController: UIViewController {
     //will show the event name
     lazy var eventNameLabel: UILabel = {
         let currentEventName = UILabel()
-//        currentEventName.text = self.eventName.capitalized
+        //        currentEventName.text = self.eventName.capitalized
         currentEventName.translatesAutoresizingMaskIntoConstraints = false
         return currentEventName
     }()
@@ -108,9 +110,9 @@ class EventDetailViewController: UIViewController {
         let currentAddressLabel = UILabel()
         currentAddressLabel.numberOfLines = 0
         currentAddressLabel.textColor = UIColor.lightGray
-//        var firstPartOfAddress = self.eventStreet  + "\n" + self.eventCity + ", " + self.eventState
-//        var secondPartOfAddress = firstPartOfAddress + " " + String(self.eventZip)
-      //  currentAddressLabel.text = secondPartOfAddress
+        //        var firstPartOfAddress = self.eventStreet  + "\n" + self.eventCity + ", " + self.eventState
+        //        var secondPartOfAddress = firstPartOfAddress + " " + String(self.eventZip)
+        //  currentAddressLabel.text = secondPartOfAddress
         currentAddressLabel.font = UIFont(name: currentAddressLabel.font.fontName, size: 12)
         return currentAddressLabel
     }()
@@ -121,8 +123,8 @@ class EventDetailViewController: UIViewController {
         currentDescriptionLabel.textContainer.maximumNumberOfLines = 0
         currentDescriptionLabel.textColor = UIColor.black
         currentDescriptionLabel.textAlignment = .justified
-//        currentDescriptionLabel.text = self.eventDescription
-//        currentDescriptionLabel.font = UIFont(name: (currentDescriptionLabel.font?.fontName)!, size: 12)
+        //        currentDescriptionLabel.text = self.eventDescription
+        //        currentDescriptionLabel.font = UIFont(name: (currentDescriptionLabel.font?.fontName)!, size: 12)
         return currentDescriptionLabel
     }()
     
@@ -137,13 +139,14 @@ class EventDetailViewController: UIViewController {
     
     func presentComments(){
         print("Comments button pressed")
-      
+        
         commentsController.eventKey = eventKey
         
-        let navController = UINavigationController(rootViewController: commentsController)
-        navController.navigationBar.isTranslucent = false
-        navController.tabBarItem.title = "Comments"
-        self.navigationController?.pushViewController(commentsController, animated: false)
+        //        let navController = UINavigationController(rootViewController: commentsController)
+        //        navController.navigationBar.isTranslucent = false
+        //        navController.tabBarItem.title = "Comments"
+        present(commentsController, animated: true, completion: nil)
+        //        self.navigationController?.pushViewController(commentsController, animated: false)
         
     }
     
@@ -161,11 +164,11 @@ class EventDetailViewController: UIViewController {
         var numberAttending = 0
         //numberAttending = AttendService.fethAttendCount(for: self.eventKey)
         let ref = Database.database().reference().child("Attending").child(self.eventKey)
-
+        
         ref.observe(.value, with: { (snapshot: DataSnapshot!) in
             numberAttending += Int(snapshot.childrenCount)
             currentAttendCount.text  = String(numberAttending)
-
+            
         })
         
         return currentAttendCount
@@ -200,7 +203,7 @@ class EventDetailViewController: UIViewController {
             // 7
             self.currentEvent?.isAttending = !((self.currentEvent!.isAttending))
             self.currentEvent?.currentAttendCount += !((self.currentEvent!.isAttending)) ? 1 : -1
-        
+            
         }
         
     }
@@ -214,16 +217,18 @@ class EventDetailViewController: UIViewController {
     }()
     
     func beginAddToStory(){
-       print("Attempting to load camera")
+        print("Attempting to load camera")
         camera.eventKey = self.eventKey
-        self.navigationController?.pushViewController(camera, animated: true)
+        present(camera, animated: true, completion: nil)
+        
+        //        self.navigationController?.pushViewController(camera, animated: true)
     }
     
     lazy var viewStoryButton : UIView = {
-       let viewStoryButton = UIView()
+        let viewStoryButton = UIView()
         viewStoryButton.backgroundColor = UIColor.red
         viewStoryButton.isUserInteractionEnabled = true
-         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleViewStory))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleViewStory))
         viewStoryButton.addGestureRecognizer(tapGesture)
         return viewStoryButton
     }()
@@ -233,9 +238,37 @@ class EventDetailViewController: UIViewController {
         eventStory.eventKey = self.eventKey
         present(eventStory, animated: true, completion: nil)
     }
-        
+    
+    
+
+    
+    func swipeAction(_ swipe: UIGestureRecognizer){
+        if let swipeGesture = swipe as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizerDirection.right:
+                print("Swiped right")
+                break
+            case UISwipeGestureRecognizerDirection.down:
+                dismiss(animated: true, completion: nil)
+                break
+            case UISwipeGestureRecognizerDirection.left:
+                print("Swiped left")
+                break
+            case UISwipeGestureRecognizerDirection.up:
+                print("Swiped up")
+                break
+            default:
+                break
+            }
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        let downSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction(_:)))
+        downSwipe.direction = .down
+        view.addGestureRecognizer(downSwipe)
         view.backgroundColor = UIColor.white
         self.navigationItem.hidesBackButton = true
         let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
@@ -244,23 +277,23 @@ class EventDetailViewController: UIViewController {
         //Subviews will be added here
         view.addSubview(currentEventImage)
         view.addSubview(currentEventDate)
-
-//        view.addSubview(attendCount)
-//        view.addSubview(commentCount)
+        
+        //        view.addSubview(attendCount)
+        //        view.addSubview(commentCount)
         
         //Constraints will be added here
         _ = currentEventImage.anchor(top: view.centerYAnchor, left: nil, bottom: nil, right: nil, paddingTop: -305, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: self.view.frame.width, height: 200)
-       _ = currentEventDate.anchor(top: view.topAnchor, left: userInteractStackView?.rightAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 180, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 90, height: 50)
-//          _ = attendCount.anchor(top: attendingButton.bottomAnchor, left: commentCount.leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 60, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
-//        _ = commentCount.anchor(top: commentsViewButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 40, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
-//        _ = addToStoryButton.anchor(top: stackView?.bottomAnchor, left: attendingButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 30)
-//        _ = viewStoryButton.anchor(top: stackView?.bottomAnchor, left: addToStoryButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
-//        viewStoryButton.layer.cornerRadius = 40/2
+        _ = currentEventDate.anchor(top: view.topAnchor, left: userInteractStackView?.rightAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 180, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 90, height: 50)
+        //          _ = attendCount.anchor(top: attendingButton.bottomAnchor, left: commentCount.leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 60, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
+        //        _ = commentCount.anchor(top: commentsViewButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 40, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
+        //        _ = addToStoryButton.anchor(top: stackView?.bottomAnchor, left: attendingButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 30)
+        //        _ = viewStoryButton.anchor(top: stackView?.bottomAnchor, left: addToStoryButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
+        //        viewStoryButton.layer.cornerRadius = 40/2
         attendingButton.isSelected = (currentEvent?.isAttending)!
         setupEventDisplayScreen()
         userInteractionView()
         
-       // navigationController?.isHeroEnabled = true
+        // navigationController?.isHeroEnabled = true
     }
     
     fileprivate func setupEventDisplayScreen(){
@@ -293,7 +326,7 @@ class EventDetailViewController: UIViewController {
         
         ref.observe(.value, with: { (snapshot: DataSnapshot!) in
             var numberOfComments = 0
-             numberOfComments = numberOfComments + Int(snapshot.childrenCount)
+            numberOfComments = numberOfComments + Int(snapshot.childrenCount)
             self.commentCount.text  = String(numberOfComments)
             
         })

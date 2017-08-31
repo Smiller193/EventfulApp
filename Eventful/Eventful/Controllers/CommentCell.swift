@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+
+
 class CommentCell: UICollectionViewCell {
     var didTapOptionsButtonForCell: ((CommentCell) -> Void)?
 
@@ -26,6 +28,7 @@ class CommentCell: UICollectionViewCell {
             
             attributedText.append(NSAttributedString(string: " " + (comment.content), attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)]))
             textView.attributedText = attributedText
+            
 
         }
     }

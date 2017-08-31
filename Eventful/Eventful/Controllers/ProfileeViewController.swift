@@ -18,16 +18,15 @@ import FirebaseStorage
 
 
 class ProfileeViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
-    var userEventHandle: DatabaseHandle = 0
-    var userEventRef: DatabaseReference? = nil
+    var profileHandle: DatabaseHandle = 0
+    var profileRef: DatabaseReference?
     let cellID = "cellID"
     let profileSetupTransition = AlterProfileViewController()
     let settingView = SettingsViewController()
-    var profileHandle: DatabaseHandle = 0
-    var profileRef: DatabaseReference?
     var userEvents = [Event]()
     var userId: String?
     var user: User?
+    var emptyLabel: UILabel?
     
     var currentUserName: String = ""
     
@@ -35,82 +34,40 @@ class ProfileeViewController: UICollectionViewController, UICollectionViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView?.backgroundColor = UIColor.white
-        fetchUser()
+         let user = self.user ?? User.current
+        
+        profileHandle = UserService.observeProfile(for: user) { [unowned self](ref, user, events) in
+            self.profileRef = ref
+            self.user = user
+            self.userEvents = events
+           // self.jobs = allJobs
+           // self.reciepts = allReciepts
+            
+           // print(self.userEvents)
+          //  print(self.reciepts)
+            DispatchQueue.main.async {
+                self.collectionView?.reloadData()
+            }
+        }
+        
+       // fetchUser()
+        self.collectionView?.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
+
         
 collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerID")
         
         collectionView?.register(EventsAttendingCell.self, forCellWithReuseIdentifier: cellID)
 //        fetchEvents()
         collectionView?.alwaysBounceVertical = true
+        
+        
+        
     }
     
-
-    
-    fileprivate func fetchEvents(uid: String){
-        print("123")
-   
-         userEventRef = Database.database().reference().child("users").child(uid).child("Attending")
-        userEventRef?.observe(.childAdded, with: { (snapshot) in
-            guard let dictionaries = snapshot.value as? [String: Any] else{
-                return
-            }
-            
-            dictionaries.forEach({ (key,value) in
-                print(key)
-                EventService.show(forEventKey: key, completion: { (event) in
-                    let currentEvent = Event(currentEventKey: key, dictionary: (event?.eventDictionary)!)
-                    self.userEvents.append(currentEvent)
-                    self.collectionView?.reloadData()
-                })
-            })
-            
-        }) { (err) in
-            print("Failed to fetch events that a user is attending", err)
-        }
-    
-
+    deinit {
+        profileRef?.removeObserver(withHandle: profileHandle)
     }
     
-    
-    fileprivate func fetchUser(){
-        let uid = userId ?? Auth.auth().currentUser?.uid ?? ""
-        profileHandle = UserService.observeProfile(for: uid) { [unowned self] (ref, user) in
-            self.profileRef = ref
-            self.user = user
-            if let user = user{
-                //User.setCurrent(user, writeToUserDefaults: true)
-                let url = user.profilePic
-                let imageURL = URL(string: url!)
-                if imageURL == nil{
-                    //self.profileImage.image = UIImage(named: "no-profile-pic")
-                }else{
-                    DispatchQueue.main.async {
-                        guard let profileImageUrl = user.profilePic else{
-                            return
-                        }
-                        //  self.profileImage.af_setImage(withURL: imageURL!)
-                    }
-                }
-                guard let username = user.username else{
-                    return
-                }
-                
-                self.navigationItem.title = username
-
-                self.collectionView?.reloadData()
-                self.fetchEvents(uid: uid)
-
-                //self.userNameLabel.text = currentUserName
-                let currentBio = user.bio
-                if currentBio == ""{
-                    //   self.userBio.text = "[Bio]"
-                }else{
-                    // self.userBio.text = currentBio
-                    
-                }
-            }
-        }
-    }
     
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -118,33 +75,55 @@ collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UIC
         header.profileeSettings.addTarget(self, action: #selector(profileSettingsTapped), for: .touchUpInside)
         header.settings.addTarget(self, action: #selector(settingsButtonTapped), for: .touchUpInside)
         header.user = self.user
+        header.backButton.addTarget(self, action: #selector(GoBack), for: .touchUpInside)
         return header
     }
     
+    func GoBack(){
+        dismiss(animated: true, completion: nil)
+    }
+    
     func settingsButtonTapped(){
-        self.navigationController?.pushViewController(settingView, animated: true)
+        present(settingView, animated: true, completion: nil)
+//        self.navigationController?.pushViewController(settingView, animated: true)
 
     }
     
     func profileSettingsTapped(){
-        self.navigationController?.pushViewController(profileSetupTransition, animated: true)
-        
+        present(profileSetupTransition, animated: true, completion: nil)
+//        self.navigationController?.pushViewController(profileSetupTransition, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: 200)
     }
     
-   
-    
-    deinit {
-        userEventRef?.removeObserver(withHandle: userEventHandle)
-        profileRef?.removeObserver(withHandle: profileHandle)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.collectionView?.reloadData()
     }
+    
    
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return userEvents.count
+        
+        if userEvents.isEmpty == false {
+            self.collectionView?.backgroundView = nil
+            return userEvents.count
+
+        } else{
+            emptyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height))
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineBreakMode = .byWordWrapping
+            paragraph.alignment = .center
+            
+            let attributes: [String: Any] = [NSFontAttributeName: UIFont.systemFont(ofSize: 14.0), NSForegroundColorAttributeName: UIColor.lightGray, NSParagraphStyleAttributeName: paragraph]
+            let myAttrString = NSAttributedString(string:  "Go Attend Some Events", attributes: attributes)
+            emptyLabel?.attributedText = myAttrString
+            emptyLabel?.textAlignment = .center
+            self.collectionView?.backgroundView = emptyLabel
+            return 0
+        }
     }
     
     
@@ -169,8 +148,6 @@ collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UIC
         
         return cell
     }
-    
-    
     
     }
     

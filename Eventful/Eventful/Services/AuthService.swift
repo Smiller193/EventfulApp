@@ -15,7 +15,7 @@ struct AuthService {
     //will sign in an authenticated user
     static func signIn(controller : UIViewController, email: String, password: String, completion: @escaping (FIRUser?) -> Void){
         Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
-            if let error = error {
+            if error != nil {
                 SVProgressHUD.showError(withStatus: "Errpr Signing In")
 
                 //loginErrors(error: error, controller: controller)

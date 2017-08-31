@@ -22,14 +22,25 @@ class SearchHeader: UICollectionViewCell {
         let sb = UISearchBar()
         sb.placeholder = "Enter Event"
         sb.showsScopeBar = true
+        sb.setScopeBarButtonTitleTextAttributes([ NSForegroundColorAttributeName : UIColor.black], for: .normal)
         sb.scopeButtonTitles = ["Events", "Users"]
         sb.barTintColor = UIColor.white
-    
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = UIColor.rgb(red: 230, green: 230, blue: 230)
         
       //  sb.delegate = self
         return sb
     }()
+    
+    private func imageWithColor(color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0.0, y: 0.0, width:  1.0, height: 1.0)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()
+        context!.setFillColor(color.cgColor);
+        context!.fill(rect);
+        let image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return image!
+    }
     
     
     

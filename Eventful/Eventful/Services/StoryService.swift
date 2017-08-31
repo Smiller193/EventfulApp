@@ -16,7 +16,7 @@ struct StoryService {
         //getting firebase root directory
         let ref = Database.database().reference().child("Stories").child(eventKey)
         ref.observe( .value, with: { (snapshot) in
-            print(snapshot.value)
+            print(snapshot.value ?? "")
             
             guard let snapshot = snapshot.children.allObjects as? [DataSnapshot] else{
                 return

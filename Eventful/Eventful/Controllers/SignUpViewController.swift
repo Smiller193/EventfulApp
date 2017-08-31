@@ -102,7 +102,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
     // will handle the  sign up of a user
     func handleSignUp(){
             // first we cant to take sure that all of the fields are filled
-        var bio: String = ""
+        let bio: String = ""
         
         let profilePic: String = ""
             guard let username = self.nameTextField.text,

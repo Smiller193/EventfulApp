@@ -14,13 +14,17 @@ import SwiftLocation
 import CoreLocation
 
 class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+    var isFinishedPaging = false
     let detailView = EventDetailViewController()
-
+    let refreshControl = UIRefreshControl()
+    var emptyLabel: UILabel?
     var allEvents = [Event]()
     //will containt array of event keys
     var eventKeys = [String]()
     
     var grideLayout = GridLayout(numberOfColumns: 2)
+    let paginationHelper = PaginationHelper<Event>(serviceMethod: PostService.showEvent)
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // we had to do this way because View Controller only has a view now Uicollection view does as well because it is a subclass of UI viewcontroller and because this controller also contains a collection view that is a child of the view controllers view we have to change the collection views background color because that's whats being presented to the screen
@@ -30,34 +34,78 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
         //collectionView?.dataSource = self
         collectionView?.collectionViewLayout = grideLayout
         collectionView?.reloadData()
+        self.collectionView?.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
         navigationItem.title = "Home Page"
         collectionView?.register(CustomCell.self, forCellWithReuseIdentifier: customCellIdentifier)
         
-        PostService.showEvent(location: User.current.location!) { (event) in
-            self.allEvents = event
-            print(self.allEvents)
+//        PostService.showEvent(location: User.current.location!) { (event) in
+//            self.allEvents = event
+//            print(self.allEvents)
+//            
+//            DispatchQueue.main.async {
+//                self.collectionView?.reloadData()
+//            }
+//        }
+        configureCollectionView()
+        reloadHomeFeed()
+    }
+    
+    
+    func reloadHomeFeed() {
+        self.paginationHelper.reloadData(completion: { [unowned self] (events) in
+            self.allEvents = events
             
-            DispatchQueue.main.async {
-                self.collectionView?.reloadData()
+            if self.refreshControl.isRefreshing {
+                self.refreshControl.endRefreshing()
             }
-        }
-        
-       
-    
-    
-        
-    
+            
+            self.collectionView?.reloadData()
+        })
     }
 
+    
+    func configureCollectionView() {
+        // add pull to refresh
+        refreshControl.addTarget(self, action: #selector(reloadHomeFeed), for: .valueChanged)
+        collectionView?.addSubview(refreshControl)
+    }
     
     // need to tell it how many cells to have
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return allEvents.count
+        if allEvents.isEmpty == false {
+            return allEvents.count
+
+        }else{
+            emptyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height))
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineBreakMode = .byWordWrapping
+            paragraph.alignment = .center
+            
+            let attributes: [String: Any] = [NSFontAttributeName: UIFont.systemFont(ofSize: 14.0), NSForegroundColorAttributeName: UIColor.lightGray, NSParagraphStyleAttributeName: paragraph]
+            let myAttrString = NSAttributedString(string:  "Sorry No Events In Your Area At The Moment", attributes: attributes)
+            emptyLabel?.attributedText = myAttrString
+            emptyLabel?.textAlignment = .center
+            self.collectionView?.backgroundView = emptyLabel
+            return 0
+        }
     }
+    
     let customCellIdentifier = "customCellIdentifier"
     // need to tell the collection view controller what type of cell we want to return
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+//        if indexPath.item >= allEvents.count - 1 {
+//            print("paginating for post")
+//            paginationHelper.paginate(completion: { [unowned self] (events) in
+//                self.allEvents.append(contentsOf: events)
+//                
+//                DispatchQueue.main.async {
+//                    self.collectionView?.reloadData()
+//                }
+//            })
+//        }
+        
         let customCell = collectionView.dequeueReusableCell(withReuseIdentifier: customCellIdentifier, for: indexPath) as! CustomCell
         let imageURL = URL(string: allEvents[indexPath.item].currentEventImage)
         print(imageURL ?? "")
@@ -77,12 +125,13 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
             detailView.eventCity = allEvents[indexPath.row].currentEventCity
             detailView.eventState = allEvents[indexPath.row].currentEventState
             detailView.eventZip = allEvents[indexPath.row].currentEventZip
-            detailView.eventKey = allEvents[indexPath.row].currentEventKey
+            detailView.eventKey = allEvents[indexPath.row].key!
             detailView.eventPromo = allEvents[indexPath.row].currentEventPromo!
             detailView.eventDate = allEvents[indexPath.row].currentEventDate!
             detailView.eventTime = allEvents[indexPath.row].currentEventTime!
             detailView.currentEvent = allEvents[indexPath.row]
-            self.navigationController?.pushViewController(detailView, animated: true)
+            present(detailView, animated: true, completion: nil)
+            //self.navigationController?.pushViewController(detailView, animated: true)
             
         }
          print("Cell \(indexPath.row) selected")

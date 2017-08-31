@@ -23,15 +23,17 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
         super.viewDidLoad()
         view?.backgroundColor = UIColor.white
         navigationItem.title = "Profile Settings"
-        self.navigationItem.hidesBackButton = true
-        let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
-        self.navigationItem.leftBarButtonItem = backButton
+//        self.navigationItem.hidesBackButton = true
+//        let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
+//        self.navigationItem.leftBarButtonItem = backButton
         //Will add the subviews to the screen
         view.addSubview(selectProfileImage)
         view.addSubview(changeProfilePicture)
         view.addSubview(changeUsername)
         view.addSubview(changeQuote)
         view.addSubview(saveProfileEdits)
+        view.addSubview(backButton)
+
         
         ///Constraints for all views will go here
         
@@ -44,8 +46,7 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
         //Constraints for the text field that corresponds to the label
         _ = changeQuote.anchor(top: changeUsername.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 15, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 0, height: 35)
         _ = saveProfileEdits.anchor(top: changeQuote.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 200, paddingLeft: 32, paddingBottom: 0, paddingRight: 32, width: 200, height: 35)
-        
-        
+         _ = backButton.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 4, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
         ///////////////////////////////////////////////
         
         
@@ -59,16 +60,28 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
         
     }
     
+    lazy var backButton: UIButton = {
+        let backButton = UIButton(type: .system)
+        backButton.setImage(#imageLiteral(resourceName: "icons8-Expand Arrow-48").withRenderingMode(.alwaysOriginal), for: .normal)
+        backButton.addTarget(self, action: #selector(handleSettingsDismiss), for: .touchUpInside)
+        return backButton
+    }()
+    
+    func handleSettingsDismiss(){
+        print("Button pressed")
+        dismiss(animated: true, completion: nil)
+    }
+    
     //Calls this function when the tap is recognized.
     func dismissKeyboard() {
         //Causes the view (or one of its embedded text fields) to resign the first responder status.
         view.endEditing(true)
     }
 
-    func GoBack(){
-        _ = self.navigationController?.popViewController(animated: true)
-    }
-    
+//    func GoBack(){
+//        _ = self.navigationController?.popViewController(animated: true)
+//    }
+//    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         selectProfileImage.layer.cornerRadius = selectProfileImage.frame.size.width / 2;

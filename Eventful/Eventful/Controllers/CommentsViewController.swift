@@ -17,51 +17,40 @@ import Firebase
 class CommentsViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UITextFieldDelegate{
     //arrray of comments that will determine how many cells are displayed as well as hold on to all comments in comment box
     // database handles for observing data with real time syncing
-    
     var messagesHandle: DatabaseHandle = 0
     var messagesRef: DatabaseReference?
     //eventkey for database use
     public var eventKey = ""
     let cellID = "cellID"
     //function that will handle observing messages in the database
-    
     var bottomConstraint: NSLayoutConstraint?
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Comments"
         collectionView?.backgroundColor = UIColor.white
-        self.navigationItem.hidesBackButton = true
-        let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
-        self.navigationItem.leftBarButtonItem = backButton
-        
+//        self.navigationItem.hidesBackButton = true
+//        let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
+//        self.navigationItem.leftBarButtonItem = backButton
         self.collectionView?.register(CommentCell.self, forCellWithReuseIdentifier: cellID)
         collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom:-50, right: 0)
-        
         collectionView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: -50, right: 0)
         collectionView?.alwaysBounceVertical = true
         collectionView?.keyboardDismissMode = .interactive
         view.addSubview(containerView)
-        
-        
-        
         view.addConstraintsWithFormat("H:|[v0]|", views: containerView)
         view.addConstraintsWithFormat("V:[v0(48)]", views: containerView)
-        
         bottomConstraint = NSLayoutConstraint(item: containerView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
         view.addConstraint(bottomConstraint!)
-        
-        
-        
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardNotification), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+         self.collectionView?.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
+        
+        collectionView?.register(CommentHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerID")
         
         // Register cell classes
         // self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
         paginateComments()
-        
     }
     
     func handleKeyboardNotification(notification: NSNotification){
@@ -83,23 +72,17 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
             })
         }
     }
-    
-    
-    
-    
-    
+
     var comments = [CommentGrabbed]()
     var isFinishedPaging = false
     // will do the work of fetching the comments and populate the array
     fileprivate func paginateComments(){
-      print("Start paging for more post")
         messagesRef = Database.database().reference().child("Comments").child(eventKey)
         var query = messagesRef?.queryOrderedByKey()
         
         
         if comments.count > 0 {
             let value = comments.last?.commentID
-            print(value ?? "")
             query = query?.queryStarting(atValue: value)
         }
         query?.queryLimited(toFirst: 2).observe(.value, with: { (snapshot) in
@@ -114,10 +97,7 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
             if self.comments.count > 0 {
                 allObjects.removeFirst()
             }
-            
             allObjects.forEach({ (snapshot) in
-                print(snapshot.key)
-                
                 guard let commentDictionary = snapshot.value as? [String: Any] else{
                     return
                 }
@@ -125,33 +105,22 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
                     return
                 }
                 UserService.show(forUID: uid, completion: { (user) in
-                    
                     if let user = user {
                         var commentFetched = CommentGrabbed(user: user, dictionary: commentDictionary)
                         commentFetched.commentID = snapshot.key
-                        
-                        
                         let filteredArr = self.comments.filter { (comment) -> Bool in
-                            print(commentFetched.commentID ?? "nil")
                             return comment.commentID == commentFetched.commentID
                         }
-                        
                         if filteredArr.count == 0 {
                              self.comments.append(commentFetched)
                         }
-                        
-                       
                     }
                     self.comments.sort(by: { (comment1, comment2) -> Bool in
                         return comment1.creationDate.compare(comment2.creationDate) == .orderedAscending
                     })
-                    
-                    
                     self.comments.forEach({ (comments) in
-                        print(comments.commentID ?? "")
                     })
                     self.collectionView?.reloadData()
-                    
                 })
                 
             })
@@ -183,7 +152,6 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         //fire off pagination
         if indexPath.item == self.comments.count - 1 && !isFinishedPaging {
-            print("Paginating for post")
             self.paginateComments()
         }
         
@@ -192,6 +160,7 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
         cell.didTapOptionsButtonForCell = flagButtonTapped(from:)
         return cell
     }
+    
     
      func flagButtonTapped (from cell: CommentCell){
         guard let indexPath = collectionView?.indexPath(for: cell) else { return }
@@ -229,7 +198,6 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
         return 0
     }
     
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = true
@@ -248,7 +216,6 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
         self.view.endEditing(true)
         tabBarController?.tabBar.isHidden = false
     }
-    
     lazy var submitButton : UIButton = {
         let submitButton = UIButton(type: .system)
         submitButton.setTitle("Submit", for: .normal)
@@ -259,21 +226,16 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
        return submitButton
     }()
   
-    
     //allows you to gain access to the input accessory view that each view controller has for inputting text
     lazy var containerView: UIView = {
         let containerView = UIView()
         containerView.backgroundColor = .white
-        
-    
         containerView.addSubview(self.submitButton)
         self.submitButton.anchor(top: containerView.topAnchor, left: nil, bottom: containerView.bottomAnchor, right: containerView.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 12, width: 50, height: 0)
         
         containerView.addSubview(self.commentTextField)
         self.commentTextField.anchor(top: containerView.topAnchor, left: containerView.leftAnchor, bottom: containerView.bottomAnchor, right: self.submitButton.leftAnchor, paddingTop: 0, paddingLeft: 12, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
         self.commentTextField.delegate = self
-        
-        
         let lineSeparatorView = UIView()
         lineSeparatorView.backgroundColor = UIColor.rgb(red: 230, green: 230, blue: 230)
         containerView.addSubview(lineSeparatorView)
@@ -292,20 +254,29 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
     
     func textFieldDidChange(_ textField: UITextField) {
         let isCommentValid = commentTextField.text?.characters.count ?? 0 > 0
-        
         if isCommentValid {
             submitButton.isEnabled = true
         }else{
             submitButton.isEnabled = false
         }
-        
-        
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: view.frame.width, height: 30)
+    }
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerID", for: indexPath) as! CommentHeader
+        header.backButton.addTarget(self, action: #selector(handleCommentDismiss), for: .touchUpInside)
+        return header
     }
     
-
+    func handleCommentDismiss(){
+        print("Button pressed")
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
     
     func handleSubmit(){
-        print("submit button pressed")
         guard let comment = commentTextField.text, comment.characters.count > 0 else{
             return
         }
@@ -314,7 +285,6 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
         // will remove text after entered
         self.commentTextField.text = nil
     }
-    
     
     //need this function to make the inputAccessory view actually appear
     override var canBecomeFirstResponder: Bool{
@@ -327,11 +297,12 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
     }
     
     
-    func GoBack(){
-        _ = self.navigationController?.popViewController(animated: false)
-    }
+//    func GoBack(){
+//        _ = self.navigationController?.popViewController(animated: false)
+//    }
     
 }
+
 
 extension CommentsViewController {
     func sendMessage(_ message: Comments) {

@@ -19,9 +19,10 @@ class SettingsViewController: UIViewController {
         navigationItem.title = "Settings"
         view.addSubview(logoutImage)
         view.addSubview(logoutButton)
-        self.navigationItem.hidesBackButton = true
-        let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
-        self.navigationItem.leftBarButtonItem = backButton
+        view.addSubview(backButton)
+//        self.navigationItem.hidesBackButton = true
+//        let backButton = UIBarButtonItem(image: UIImage(named: "icons8-Back-64"), style: .plain, target: self, action: #selector(GoBack))
+//        self.navigationItem.leftBarButtonItem = backButton
 
         authHandle = AuthService.authListener(viewController: self)
 
@@ -31,10 +32,7 @@ class SettingsViewController: UIViewController {
         _ = logoutImage.anchor(top: view.centerYAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 120, paddingLeft: 32, paddingBottom: 0, paddingRight: 0, width: 15, height: 15)
         //Constraints for the logout button
         _ = logoutButton.anchor(top: view.centerYAnchor, left: logoutImage.rightAnchor, bottom: nil, right: nil, paddingTop: 120, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 70, height: 15)
-
-        
-
-        // Do any additional setup after loading the view.
+        _ = backButton.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 10, paddingLeft: 4, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
     }
     
     
@@ -58,8 +56,20 @@ class SettingsViewController: UIViewController {
         logout.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
         return logout
     }()
+    
+    lazy var backButton: UIButton = {
+        let backButton = UIButton(type: .system)
+        backButton.setImage(#imageLiteral(resourceName: "icons8-Expand Arrow-48").withRenderingMode(.alwaysOriginal), for: .normal)
+        backButton.addTarget(self, action: #selector(handleSettingsDismiss), for: .touchUpInside)
+        return backButton
+    }()
+    
+    func handleSettingsDismiss(){
+        print("Button pressed")
+        dismiss(animated: true, completion: nil)
+    }
 
-    //will log the user out 
+    //will log the user out
     func handleLogout(){
         print("Logout button pressed")
      

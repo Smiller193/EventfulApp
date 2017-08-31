@@ -40,10 +40,33 @@ class VideoViewController: UIViewController {
     }()
     
     
-    
+    func swipeAction(_ swipe: UIGestureRecognizer){
+        if let swipeGesture = swipe as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizerDirection.right:
+                print("Swiped right")
+                break
+            case UISwipeGestureRecognizerDirection.down:
+                break
+            case UISwipeGestureRecognizerDirection.left:
+                print("Swiped left")
+                break
+            case UISwipeGestureRecognizerDirection.up:
+                print("Swiped up")
+                break
+            default:
+                break
+            }
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.gray
+        let downSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction(_:)))
+        downSwipe.direction = .down
+        view.addGestureRecognizer(downSwipe)
+
+        
         //Setting the video url of the AVPlayer
         player = AVPlayer(url: videoURL)
         playerController = AVPlayerViewController()
@@ -90,8 +113,8 @@ class VideoViewController: UIViewController {
     
     
     func cancel() {
-        //        dismiss(animated: true, completion: nil)
-    _ = self.navigationController?.popViewController(animated: true)
+               dismiss(animated: true, completion: nil)
+//    _ = self.navigationController?.popViewController(animated: true)
     }
     
     // Takes you to AddPostViewController

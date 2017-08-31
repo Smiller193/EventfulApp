@@ -13,8 +13,12 @@ class CameraViewController: SwiftyCamViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tabBarController?.tabBar.isHidden = true
-self.navigationController?.isNavigationBarHidden = true
+//        self.tabBarController?.tabBar.isHidden = true
+//self.navigationController?.isNavigationBarHidden = true
+        
+        let downSwipe = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction(_:)))
+        downSwipe.direction = .down
+        view.addGestureRecognizer(downSwipe)
         // Setting the camera delegate
         cameraDelegate = self
         // Setting maximum duration for video
@@ -33,6 +37,26 @@ self.navigationController?.isNavigationBarHidden = true
         
     }
     
+    func swipeAction(_ swipe: UIGestureRecognizer){
+        if let swipeGesture = swipe as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizerDirection.right:
+                print("Swiped right")
+                break
+            case UISwipeGestureRecognizerDirection.down:
+                dismiss(animated: true, completion: nil)
+                break
+            case UISwipeGestureRecognizerDirection.left:
+                print("Swiped left")
+                break
+            case UISwipeGestureRecognizerDirection.up:
+                print("Swiped up")
+                break
+            default:
+                break
+            }
+        }
+    }
     
     @objc private func Tap(_ sender: Any) {
         takePhoto()
@@ -41,7 +65,8 @@ self.navigationController?.isNavigationBarHidden = true
     func swiftyCam(_ swiftyCam: SwiftyCamViewController, didTake photo: UIImage) {
         let newVC = PhotoViewController(image: photo)
         newVC.eventKey = self.eventKey
-        self.navigationController?.pushViewController(newVC, animated: true)
+        present(newVC, animated: true, completion: nil)
+       // self.navigationController?.pushViewController(newVC, animated: true)
     }
     
     
@@ -78,9 +103,10 @@ self.navigationController?.isNavigationBarHidden = true
     // Function which controls the cancel button
     @objc private func cancel()
     {
-        self.tabBarController?.tabBar.isHidden = false
-        self.navigationController?.isNavigationBarHidden = false
-        self.navigationController?.popViewController(animated: true)
+//        self.tabBarController?.tabBar.isHidden = false
+//        self.navigationController?.isNavigationBarHidden = false
+        dismiss(animated: true, completion: nil)
+//        self.navigationController?.popViewController(animated: true)
     }
     
     // Function which controls that capture button
@@ -118,7 +144,7 @@ self.navigationController?.isNavigationBarHidden = true
         flashButton.addTarget(self, action: #selector(toggleFlashAction(_:)), for: .touchUpInside)
         self.view.addSubview(flashButton)
         
-        cancelButton = UIButton(frame: CGRect(x: 10.0, y: 23.0, width: 20.0, height: 20.0))
+        cancelButton = UIButton(frame: CGRect(x: 10.0, y: 23.0, width: 25.0, height: 25.0))
         cancelButton.setImage(#imageLiteral(resourceName: "cancel"), for: UIControlState())
         cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         view.addSubview(cancelButton)
@@ -167,7 +193,8 @@ extension CameraViewController : SwiftyCamViewControllerDelegate
         // I am passing the url to VideoViewController to show the video
         let newVC = VideoViewController(videoURL: url)
         newVC.eventKey = self.eventKey
-        self.navigationController?.pushViewController(newVC, animated: true)
+        present(newVC, animated: true, completion: nil)
+       // self.navigationController?.pushViewController(newVC, animated: true)
         //self.present(newVC, animated: true, completion: nil)
     }
     
