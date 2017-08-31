@@ -94,18 +94,6 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
     let customCellIdentifier = "customCellIdentifier"
     // need to tell the collection view controller what type of cell we want to return
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-//        if indexPath.item >= allEvents.count - 1 {
-//            print("paginating for post")
-//            paginationHelper.paginate(completion: { [unowned self] (events) in
-//                self.allEvents.append(contentsOf: events)
-//                
-//                DispatchQueue.main.async {
-//                    self.collectionView?.reloadData()
-//                }
-//            })
-//        }
-        
         let customCell = collectionView.dequeueReusableCell(withReuseIdentifier: customCellIdentifier, for: indexPath) as! CustomCell
         let imageURL = URL(string: allEvents[indexPath.item].currentEventImage)
         print(imageURL ?? "")
@@ -136,6 +124,20 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
         }
          print("Cell \(indexPath.row) selected")
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.item >= allEvents.count - 1 {
+            print("paginating for post")
+            paginationHelper.paginate(completion: { [unowned self] (events) in
+                self.allEvents.append(contentsOf: events)
+                
+                DispatchQueue.main.async {
+                    self.collectionView?.reloadData()
+                }
+            })
+        }
+    }
+    
     //will make surepictures keep same orientation even if you flip screen
     // will most likely look into portrait mode but still good to have
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
