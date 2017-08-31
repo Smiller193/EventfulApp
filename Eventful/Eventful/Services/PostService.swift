@@ -34,26 +34,32 @@ struct PostService {
     
     static func showEvent(pageSize: UInt, lastPostKey: String? = nil,completion: @escaping ([Event]) -> Void) {
         //getting firebase root directory
+       // print(lastPostKey)
         var currentEvents = [Event]()
         let eventsByLocationRef = Database.database().reference().child("eventsbylocation").child(User.current.location!)
         
-        let ref = Database.database().reference().child("events")
-        var query = eventsByLocationRef.queryOrderedByKey().queryLimited(toLast: pageSize)
+        //let ref = Database.database().reference().child("events")
+        var query = eventsByLocationRef.queryOrderedByKey().queryLimited(toFirst: pageSize)
         if let lastPostKey = lastPostKey {
+          //  print(lastPostKey)
             query = query.queryEnding(atValue: lastPostKey)
         }
         query.observeSingleEvent(of: .value, with: { (snapshot) in
-            print(snapshot)
-            print(snapshot.value)
+         //   print(snapshot)
+           // print(snapshot.value)
             guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else{
                 return
             }
            
             allObjects.forEach({ (snapshot) in
-              print(snapshot.value)
+            //  print(snapshot.value)
                 EventService.show(forEventKey: snapshot.value as! String, completion: { (event) in
-                    currentEvents.append(.init(currentEventKey: snapshot.value as! String, dictionary: (event?.eventDictionary)!))
+                  //  print(event)
+//                    currentEvents.append(.init(currentEventKey: snapshot.value as! String, dictionary: (event?.eventDictionary)!))
+                    currentEvents.append(event!)
                   //  print(currentEvents)
+                    print(currentEvents)
+                    print("\n\n\n\n\n\n")
                     print(currentEvents.count)
                     completion(currentEvents)
                 })

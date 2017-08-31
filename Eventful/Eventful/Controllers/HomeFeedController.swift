@@ -13,7 +13,7 @@ import AlamofireNetworkActivityIndicator
 import SwiftLocation
 import CoreLocation
 
-class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout,UIGestureRecognizerDelegate {
     var isFinishedPaging = false
     let detailView = EventDetailViewController()
     let refreshControl = UIRefreshControl()
@@ -23,6 +23,7 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
     var eventKeys = [String]()
     
     var grideLayout = GridLayout(numberOfColumns: 2)
+    
     let paginationHelper = PaginationHelper<Event>(serviceMethod: PostService.showEvent)
 
     override func viewDidLoad() {
@@ -59,7 +60,9 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
                 self.refreshControl.endRefreshing()
             }
             
-            self.collectionView?.reloadData()
+            DispatchQueue.main.async {
+                self.collectionView?.reloadData()
+            }
         })
     }
 
@@ -73,27 +76,13 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
     // need to tell it how many cells to have
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if allEvents.isEmpty == false {
             return allEvents.count
-
-        }else{
-            emptyLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: self.view.bounds.size.height))
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.lineBreakMode = .byWordWrapping
-            paragraph.alignment = .center
-            
-            let attributes: [String: Any] = [NSFontAttributeName: UIFont.systemFont(ofSize: 14.0), NSForegroundColorAttributeName: UIColor.lightGray, NSParagraphStyleAttributeName: paragraph]
-            let myAttrString = NSAttributedString(string:  "Sorry No Events In Your Area At The Moment", attributes: attributes)
-            emptyLabel?.attributedText = myAttrString
-            emptyLabel?.textAlignment = .center
-            self.collectionView?.backgroundView = emptyLabel
-            return 0
-        }
     }
     
     let customCellIdentifier = "customCellIdentifier"
     // need to tell the collection view controller what type of cell we want to return
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let customCell = collectionView.dequeueReusableCell(withReuseIdentifier: customCellIdentifier, for: indexPath) as! CustomCell
         let imageURL = URL(string: allEvents[indexPath.item].currentEventImage)
         print(imageURL ?? "")
@@ -126,6 +115,7 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
         if indexPath.item >= allEvents.count - 1 {
             print("paginating for post")
             paginationHelper.paginate(completion: { [unowned self] (events) in
@@ -135,9 +125,16 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
                     self.collectionView?.reloadData()
                 }
             })
+        }else{
+            print("Not paginating")
         }
     }
     
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+
     //will make surepictures keep same orientation even if you flip screen
     // will most likely look into portrait mode but still good to have
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -221,4 +218,6 @@ class GridLayout: UICollectionViewFlowLayout {
             super.itemSize = newValue
         }
     }
+    
+    
 }
