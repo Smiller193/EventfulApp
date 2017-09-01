@@ -44,7 +44,7 @@ class PaginationHelper<T : Keyed>
     // MARK: - Init
     //    Can change the default page size for our helper
     //    Set the service method that will be paginated and return data
-    init(pageSize: UInt = 1, serviceMethod: @escaping (UInt, String?, @escaping (([T]) -> Void)) -> Void) {
+    init(pageSize: UInt = 5, serviceMethod: @escaping (UInt, String?, @escaping (([T]) -> Void)) -> Void) {
         self.pageSize = pageSize
         self.serviceMethod = serviceMethod
     }
@@ -63,15 +63,15 @@ class PaginationHelper<T : Keyed>
         //4 For our ready state, we make sure to change the state to loading and execute our service method to return the paginated data.
         case .ready:
             state = .loading
-            print(lastObjectKey)
+          //  print(lastObjectKey)
             serviceMethod(pageSize, lastObjectKey) { [unowned self] (objects: [T]) in
                 //5 We use the defer keyword to make sure the following code is executed whenever the closure returns. This is helpful for removing duplicate code.
                 defer {
                     //6 If the returned last returned object has a key value, we store that in lastObjectKey to use as a future offset for paginating. Right now the compiler will throw an error because it cannot infer that T has a property of key. We'll fix that next.
                     if let lastObjectKey = objects.last?.key {
                         self.lastObjectKey = lastObjectKey
-                        print(self.lastObjectKey)
-                        print(lastObjectKey)
+                      //  print(self.lastObjectKey)
+                      //  print(lastObjectKey)
                     }
                     // 7 We determine if we've paginated through all content because if the number of objects returned is less than the page size, we know that we're only the last page of objects.
                     self.state = objects.count < Int(self.pageSize) ? .end : .ready
@@ -79,15 +79,18 @@ class PaginationHelper<T : Keyed>
                 
                 // 8 If lastObjectKey of the helper doesn't exist, we know that it's the first page of data so we return the data as is.
                 guard let _ = self.lastObjectKey else {
-                    print(self.lastObjectKey)
+                   // print(self.lastObjectKey)
                     return completion(objects)
                 }
                 
                 // 9 Due to implementation details of Firebase, whenever we page with the lastObjectKey, the previous object from the last page is returned. Here we need to drop the first object which will be a duplicate post in our timeline. This happens whenever we're no longer on the first page.
-                print(objects.last?.key)
-                let newObjects = Array(objects.dropLast())
+              //  print(objects.last?.key)
+              //  let newObjects = Array(objects.dropLast())
               //  print(newObjects)
-                completion(newObjects)
+                print("\n")
+              //  print(objects)
+                print("\n")
+                completion(objects)
                 
             }
             

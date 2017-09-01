@@ -54,17 +54,18 @@ struct PostService {
            
             allObjects.forEach({ (snapshot) in
              print(snapshot.value)
-                guard let key: String? = snapshot.value as! String else {
-                    return
-                }
-                print(key)
-                EventService.show(forEventKey: key!, completion: { (event) in
+//                guard let key: String? = snapshot.value as! String else {
+//                    return
+//                }
+            //    print(key)
+                EventService.show(forEventKey: snapshot.value as! String, completion: { (event) in
                   //  print(event)
 //                    currentEvents.append(.init(currentEventKey: snapshot.value as! String, dictionary: (event?.eventDictionary)!))
                     currentEvents.append(event!)
                   //  print(currentEvents)
-                    print(currentEvents)
+                //    print(currentEvents)
                     print("\n\n\n\n\n\n")
+                    print("Finished an event")
                     print(currentEvents.count)
                     completion(currentEvents)
                 })
