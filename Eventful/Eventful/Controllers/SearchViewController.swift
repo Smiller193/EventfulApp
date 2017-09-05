@@ -21,50 +21,17 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
     let userProfileController = ProfileeViewController(collectionViewLayout: UICollectionViewFlowLayout())
     let currentEventDetailController = EventDetailViewController()
     var emptyLabel: UILabel?
-    
-    //ui search bar that will allow you to type in text and filter out results
-    //most of the code here is straight forward
-    //must set delegate to self to get control over certain aspects of search bar
-    //    lazy var searchBar: UISearchBar = {
-    //        let sb = UISearchBar()
-    //        sb.placeholder = "Enter Event"
-    //        sb.barTintColor = .gray
-    //        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = UIColor.rgb(red: 230, green: 230, blue: 230)
-    //        sb.delegate = self
-    //        return sb
-    //    }()
-    
-    
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView?.backgroundColor = .white
         self.collectionView?.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
-        //navigationController?.navigationBar.addSubview(searchBar)
-        //        collectionView?.emptyDataSetSource = self
-        //        collectionView?.emptyDataSetDelegate = self
+        collectionView?.backgroundColor = .white
         collectionView?.register(SearchHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerID")
-        //        self.navigationController?.navigationBar.isHidden = true
-        // searchBar.anchor(top: navBar?.topAnchor, left: navBar?.leftAnchor, bottom: navBar?.bottomAnchor, right: navBar?.rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 8, width: 0, height: 0)
-        //will register a cell to the screen
-        //notice the EventSearchCell that is one of the parameters
-        //that is there so it creates the cell in the way that I want it to based off the EventSearchCell Swift File
-        
         self.collectionView?.register(EventSearchCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.alwaysBounceVertical = true
         collectionView?.keyboardDismissMode = .onDrag
         self.collectionView?.register(UserSearchCell.self, forCellWithReuseIdentifier: cellID2)
         
-    }
-    
-
-    func spaceHeight(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
-        return 200.0
-    }
-    
-    func backgroundColor(forEmptyDataSet scrollView: UIScrollView!) -> UIColor! {
-        return UIColor.white
     }
     
     //two arrays both of type Event
@@ -79,15 +46,15 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
         // this will retur a snapshot with all the data at that location in the database and cast the results as a dictionary for later use
         let endString = searchString + "\\uf8ff"
         let query = ref.queryOrdered(byChild: "event:name").queryStarting(atValue: searchString).queryEnding(atValue: endString)
-        print(query)
+        //print(query)
         query.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let dictionary = snapshot.value as? [String: Any] else{
-                print(snapshot.value ?? "")
+              //  print(snapshot.value ?? "")
                 return
             }
-            print(snapshot.value ?? "")
+          //  print(snapshot.value ?? "")
             dictionary.forEach({ (key,value) in
-                print(key,value)
+               // print(key,value)
                 guard let eventDictionary = value as? [String: Any] else{
                     return
                 }
@@ -114,7 +81,6 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
                 
             })
             
-            
         }) { (err) in
             print("Failed to fetch event data", err)
         }
@@ -124,8 +90,8 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
     
     //detects when search bar text is done editing
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        print("Stopped Editing")
-        print(searchBar.text ?? "")
+      //  print("Stopped Editing")
+      //  print(searchBar.text ?? "")
         guard let searchText = searchBar.text else{
             return
         }
@@ -209,14 +175,14 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
         let endString = stringValue + "\\uf8ff"
         ref.queryOrdered(byChild: "username").queryStarting(atValue: stringValue).queryEnding(atValue: endString).observeSingleEvent(of: .value, with: { (snapshot) in
             
-            print(snapshot)
+          //  print(snapshot)
             
             
             guard let dictionaries = snapshot.value as? [String: Any] else{
                 return print(snapshot.value ?? "nil")
             }
             
-            print(dictionaries)
+          //  print(dictionaries)
             //does the job of sorting dictionary elements by key and value
             //displaying the key and each corresponding value
             dictionaries.forEach({ (key,value) in
@@ -226,30 +192,16 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
                 guard let userDictionary = value as? [String: Any] else{
                     return
                 }
-                
-                //                userDictionaries.forEach({ (key, value) in
-                //
-                //                    guard let postDictionary = value as? [String: Any] else{
-                //                        return
-                //                    }
-                
-                //print(postDictionary)
-                //will cast each of the values as an Event based off my included struct
-                //Make sure to create a model it is the only way to have the data in the format you want for easy access
-                
-                print(key)
+
                 let newUser = User(key: key, postDictionary: userDictionary)
-                
-                //guard let newUser != nil { return nil }
-                
-                //Filtering for duplicates in array
+
                 let filteredArr = self.usersArray.filter { (user) -> Bool in
-                    print(user.uid)
+                  //  print(user.uid)
                     return user.uid == newUser?.uid
                 }
                 
                 
-                print(newUser?.uid ?? "nil")
+              //  print(newUser?.uid ?? "nil")
                 
                 //If arrat equals 0 append newPost
                 if filteredArr.count == 0 {
@@ -269,11 +221,11 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
                 
             })
             
-            print(self.usersArray)
+           // print(self.usersArray)
             // will sort the array elements based off the name
             
             
-            print(self.usersArray)
+           // print(self.usersArray)
             // will again reload the data
             
         }) { (err) in
@@ -343,7 +295,7 @@ class EventSearchController: UICollectionViewController, UISearchBarDelegate, UI
         case 1:
             navigationController?.navigationBar.isHidden = false
             let user = filteredUsers[indexPath.item]
-            print(user.username ?? "")
+           // print(user.username ?? "")
             userProfileController.user = user
             userProfileController.navigationItem.title = user.username
             userProfileController.navigationItem.hidesBackButton = true

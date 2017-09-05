@@ -283,7 +283,7 @@ class EventDetailViewController: UIViewController {
         
         //Constraints will be added here
         _ = currentEventImage.anchor(top: view.centerYAnchor, left: nil, bottom: nil, right: nil, paddingTop: -305, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: self.view.frame.width, height: 200)
-        _ = currentEventDate.anchor(top: view.topAnchor, left: userInteractStackView?.rightAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 180, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 90, height: 50)
+        _ = currentEventDate.anchor(top: currentEventImage.bottomAnchor, left: userInteractStackView?.rightAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 10, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 90, height: 50)
         //          _ = attendCount.anchor(top: attendingButton.bottomAnchor, left: commentCount.leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 60, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
         //        _ = commentCount.anchor(top: commentsViewButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: 5, paddingLeft: 40, paddingBottom: 0, paddingRight: 0, width: 20, height: 20)
         //        _ = addToStoryButton.anchor(top: stackView?.bottomAnchor, left: attendingButton.rightAnchor, bottom: nil, right: nil, paddingTop: 3, paddingLeft: 25, paddingBottom: 0, paddingRight: 0, width: 40, height: 30)
@@ -320,7 +320,7 @@ class EventDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.navigationBar.isHidden = false
+        navigationController?.navigationBar.isHidden = true
         tabBarController?.tabBar.isHidden = false
         let ref = Database.database().reference().child("Comments").child(self.eventKey)
         

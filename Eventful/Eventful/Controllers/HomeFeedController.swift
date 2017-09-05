@@ -25,7 +25,7 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
     var grideLayout = GridLayout(numberOfColumns: 2)
     
     let paginationHelper = PaginationHelper<Event>(serviceMethod: PostService.showEvent)
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // we had to do this way because View Controller only has a view now Uicollection view does as well because it is a subclass of UI viewcontroller and because this controller also contains a collection view that is a child of the view controllers view we have to change the collection views background color because that's whats being presented to the screen
@@ -35,10 +35,10 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
         //collectionView?.dataSource = self
         collectionView?.collectionViewLayout = grideLayout
         collectionView?.reloadData()
-        self.collectionView?.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
-        navigationItem.title = "Home Page"
+      self.collectionView?.contentInset = UIEdgeInsetsMake(15, 0, 0, 0)
+       // navigationItem.title = "Home"
         collectionView?.register(CustomCell.self, forCellWithReuseIdentifier: customCellIdentifier)
-        
+    
 //        PostService.showEvent(location: User.current.location!) { (event) in
 //            self.allEvents = event
 //            print(self.allEvents)
@@ -117,7 +117,7 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         
         if indexPath.item >= allEvents.count - 1 {
-            print("paginating for post")
+           // print("paginating for post")
             paginationHelper.paginate(completion: { [unowned self] (events) in
                 self.allEvents.append(contentsOf: events)
                 
@@ -129,7 +129,6 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
             print("Not paginating")
         }
     }
-    
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
@@ -150,6 +149,13 @@ class HomeFeedController: UICollectionViewController, UICollectionViewDelegateFl
         }
     }
     
+    
+    
+    func showLeftView(sender: AnyObject?){
+        print("Button Pressed")
+       // sideMenuController?.leftViewController = LeftViewController()
+        //sideMenuController?.showLeftView(animated: true, completionHandler: nil)
+    }
     
 }
 

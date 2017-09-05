@@ -72,7 +72,6 @@ class CommentsViewController: UICollectionViewController, UICollectionViewDelega
             })
         }
     }
-
     var comments = [CommentGrabbed]()
     var isFinishedPaging = false
     // will do the work of fetching the comments and populate the array

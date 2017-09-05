@@ -205,7 +205,7 @@ class LoginViewController: UIViewController , LoginViewControllerDelegate{
         view.addSubview(stackView!)
         stackView?.distribution = .fillEqually
         stackView?.axis = .vertical
-        stackView?.spacing = 15.0
+        stackView?.spacing = 5.0
         stackView?.anchor(top: goalLabel.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 150)
         view.addSubview(signUpLabel)
         _ = signUpLabel.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 75, paddingBottom: 10, paddingRight: 0, width: 0, height: 20)

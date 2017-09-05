@@ -12,30 +12,63 @@ import SVProgressHUD
 import SwiftLocation
 import CoreLocation
 import TextFieldEffects
+import GeoFire
+import Firebase
 
 
-protocol SignUpViewControllerDelegate: class {
-    func finishSigningUp()
-}
-
-class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
+class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    var geoFire:GeoFire!
+    var geoFireRef: DatabaseReference!
     
     var selectedUserGender: String = ""
     // creates a signup UILabel
     var userLocation:String?
     
-    weak var delegate : SignUpViewControllerDelegate?
-    
-    let signUp:UILabel = {
-        let signUpLabel = UILabel()
-        let myString = "Sign Up"
-        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 20)!]
-        let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
-        signUpLabel.attributedText = myAttrString
-        
-        return signUpLabel
+    let plusPhotoButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(#imageLiteral(resourceName: "addPic").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handlePlusPhoto), for: .touchUpInside)
+        return button
     }()
     
+    func handlePlusPhoto() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.allowsEditing = true
+        
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        
+        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
+            plusPhotoButton.setImage(editedImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        } else if let originalImage =
+            info["UIImagePickerControllerOriginalImage"] as? UIImage {
+            plusPhotoButton.setImage(originalImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        }
+        
+        plusPhotoButton.layer.cornerRadius = plusPhotoButton.frame.width/2
+        plusPhotoButton.layer.masksToBounds = true
+        plusPhotoButton.layer.borderColor = UIColor.black.cgColor
+        plusPhotoButton.layer.borderWidth = 3
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+//    let signUp:UILabel = {
+//        let signUpLabel = UILabel()
+//        let myString = "Sign Up"
+//        let myAttribute = [NSFontAttributeName:UIFont(name: "Times New Roman", size: 20)!]
+//        let myAttrString = NSAttributedString(string: myString, attributes: myAttribute)
+//        signUpLabel.attributedText = myAttrString
+//        
+//        return signUpLabel
+//    }()
+//    
     // creates a name UITextField to hold the name
 
     let nameTextField : HoshiTextField = {
@@ -164,27 +197,20 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
     func finishSigningUp() {
         print("Finish signing up from signup view controller")
         print("Attempting to return to root view controller")
-    
         let homeController = HomeViewController()
         //should change the root view controller to the homecontroller when done signing up
         self.view.window?.rootViewController = homeController
         self.view.window?.makeKeyAndVisible()
-        
     }
     
     
 // will validate email entry so user can not enter false text
     
     func validateEmail(enteredEmail:String) -> Bool {
-        
         let emailFormat = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailFormat)
         return emailPredicate.evaluate(with: enteredEmail)
-        
     }
-
-    
-
     //will create a label so users know to select gender when creating account
     let genderLabel: UILabel = {
        let gender = UILabel()
@@ -195,7 +221,6 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
         return gender
     }()
     //will create a segmented control button to add gender
-    
     lazy var genderSelector: UISegmentedControl = {
         let genderSelect = UISegmentedControl(items: ["Male", "Female"])
         genderSelect.tintColor = UIColor.black
@@ -210,10 +235,8 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
             selectedUserGender = "Male"
         }else if(genderSelector.selectedSegmentIndex == 1 ){
             selectedUserGender = "Female"
-
         }
        // print(selectedUserGender)
-
     }
     
   // will create a cancel button so users can go back to login screen if they actually want to log in
@@ -280,15 +303,15 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
 
         /////////////////////////  Where all the subviews will be added
         
-        view.addSubview(signUp)
+        view.addSubview(plusPhotoButton)
         view.addSubview(cancelButton)
         ////////////////////////////////////////////////////////////////////
         
         
         /////////////////////////  Where all the constraints will be added
         // constraints for the sign up label/title
-        _ = signUp.anchor(top: view.centerYAnchor, left: nil, bottom: nil, right: nil, paddingTop: -280, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 70, height: 35)
-        signUp.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+             plusPhotoButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: nil, paddingTop: 50, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 140, height: 140)
+        plusPhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 
         _ = cancelButton.anchor(top: view.centerYAnchor, left: view.leftAnchor, bottom: nil, right: nil, paddingTop: -300, paddingLeft: 20, paddingBottom: 0, paddingRight: 0, width: 0, height: 20)
 
@@ -304,12 +327,12 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
     var stackView: UIStackView?
     
     func  createSignUpScreen(){
-        stackView = UIStackView(arrangedSubviews: [ nameTextField, emailTextField,passwordTextField,confirmPasswordTextField,genderSelector, signupButton])
+        stackView = UIStackView(arrangedSubviews: [ nameTextField, emailTextField,passwordTextField,confirmPasswordTextField, signupButton])
         view.addSubview(stackView!)
         stackView?.distribution = .fillEqually
         stackView?.axis = .vertical
         stackView?.spacing = 15.0
-        stackView?.anchor(top: signUp.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 350)
+        stackView?.anchor(top: plusPhotoButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 40, paddingLeft: 40, paddingBottom: 0, paddingRight: 40, width: 0, height: 350)
         
         
     }
@@ -350,6 +373,7 @@ class SignUpViewController: UIViewController, SignUpViewControllerDelegate {
                 print(searchBoxes)
                 
                 let location = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                print(location)
                 Location.getPlacemark(forLocation: location, success: { placemarks -> (Void) in
                     //print(placemarks)
                     guard let currentCityLoc = placemarks.first?.locality else { return }

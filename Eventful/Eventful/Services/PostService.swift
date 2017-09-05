@@ -53,7 +53,7 @@ struct PostService {
             }
            
             allObjects.forEach({ (snapshot) in
-             print(snapshot.value)
+             print(snapshot.value ?? "")
 //                guard let key: String? = snapshot.value as! String else {
 //                    return
 //                }

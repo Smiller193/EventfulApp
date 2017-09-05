@@ -103,7 +103,7 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
         //will set the default pic
        // self.selectProfileImage.layer.cornerRadius = self.selectProfileImage.frame.size.width / 2;
         let imageUrl = URL(string: User.current.profilePic!)
-        print(imageUrl as Any)
+      //  print(imageUrl as Any)
         if User.current.profilePic != ""{
             print("Tried to load default pic")
             selectPicture.af_setImage(withURL: imageUrl!)
@@ -145,7 +145,7 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
       let changeName = UITextField()
         if User.current.username != ""{
             changeName.text = User.current.username
-            print(changeName.text ?? "")
+           // print(changeName.text ?? "")
         }else{
             changeName.placeholder = "Username"
         }
@@ -210,10 +210,10 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
                     print(error ?? "")
                     return
                 }
-                print(metadata ?? "")
-                print(metadata?.downloadURL()!.absoluteString ?? "")
+               // print(metadata ?? "")
+                //print(metadata?.downloadURL()!.absoluteString ?? "")
                 profilePic = (metadata?.downloadURL()!.absoluteString)!
-                print(profilePic)
+                //print(profilePic)
                 //need to change this so I edit based off whether a value is actually added or whether a username or bio is actually changed
                 UserService.editProfileImage(url: profilePic, completion: { (user) in
                     if let user = user {
@@ -262,7 +262,7 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
         print("info")
         var selectedImageFromPicker: UIImage?
         if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
-            print(editedImage.size)
+          //  print(editedImage.size)
             selectedImageFromPicker = editedImage
             profileImageTemp = selectedImageFromPicker!
             //added completion handler to grab image once it is seleted
@@ -270,7 +270,7 @@ class AlterProfileViewController: UIViewController, UIImagePickerControllerDeleg
             picker.dismiss(animated: true, completion: nil)
 
         }else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
-            print(originalImage.size)
+          //  print(originalImage.size)
             selectedImageFromPicker = originalImage
             //added completion handler to grab image once it is seleted
             self.selectProfileImage.image = selectedImageFromPicker

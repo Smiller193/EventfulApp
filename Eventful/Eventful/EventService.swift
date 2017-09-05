@@ -18,7 +18,7 @@ struct EventService {
         let ref = Database.database().reference().child("events").child(eventKey)
        // print(eventKey)
         ref.observeSingleEvent(of: .value, andPreviousSiblingKeyWith: { (snapshot,eventKey) in
-            print(snapshot.value ?? "")
+            //print(snapshot.value ?? "")
             guard let event = Event(snapshot: snapshot) else {
                 return completion(nil)
             }

@@ -14,7 +14,6 @@ import  UIKit
 
 
 struct UserService {
-    
     /// will create a user in the database
     static func create(_ firUser: FIRUser, username: String, gender: String,profilePic: String,bio: String,location: String, completion: @escaping (User?) -> Void) {
         let userAttrs = ["username": username,
@@ -30,16 +29,13 @@ struct UserService {
                 assertionFailure(error.localizedDescription)
                 return completion(nil)
             }
-            
             ref.observeSingleEvent(of: .value, with: { (snapshot) in
                 let user = User(snapshot: snapshot)
                 completion(user)
             })
         }
     }
-    
     //Will allow you to edit user data in firebase
-    
     static func edit(username: String, bio: String, completion: @escaping (User?) -> Void) {
         let userAttrs = ["username": username,
                          "bio": bio] as [String : Any]
@@ -55,15 +51,10 @@ struct UserService {
                 completion(user)
             })
         }
-    
-    
-    
     }
-    
     // will strictly handle editing the user section in the database
     static func editProfileImage(url: String, completion: @escaping (User?) -> Void) {
         let userAttrs = ["profilePic": url]
-        
         let ref = Database.database().reference().child("users").child(User.current.uid)
         ref.updateChildValues(userAttrs) { (error, ref) in
             if let error = error {
@@ -77,8 +68,6 @@ struct UserService {
             })
         }
     }
-    
-    
     
     // will observe the user object in the database for any changes and make sure that they are updated
     static func observeProfile(for user: User, completion: @escaping (DatabaseReference, User?, [Event]) -> Void) -> DatabaseHandle {

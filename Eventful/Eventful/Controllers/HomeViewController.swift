@@ -11,71 +11,26 @@ import Firebase
 import FirebaseAuth
 import EZSwipeController
 
-
 class HomeViewController: EZSwipeController {
+    let dropDownLauncher = DropDownLauncher()
+    //    override func viewDidLoad() {
+    //        super.viewDidLoad()
+    //
+    //        // setupView()
+    //    }
     
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//
-//        // setupView()
-//    }
     
     override func setupView() {
         datasource = self
-        navigationBarShouldNotExist = true
     }
-
     
     
-    // Things that I need to appear everytime will be in viewWillAppear
-//    func setupView( ) {
-//        let layout = UICollectionViewFlowLayout()
-//        let homeFeedController = HomeFeedController(collectionViewLayout: layout)
-//        
-//        // let viewController = HomeFeedController()
-//        let navController = UINavigationController(rootViewController: homeFeedController)
-//        navController.navigationBar.isTranslucent = false
-//        navController.tabBarItem.image = UIImage(named: "icons8-Home-50")
-//        navController.tabBarItem.selectedImage = UIImage(named: "icons8-Home Filled-50")
-//
-//        navController.tabBarItem.title = "Home"
-//        //ProfileeViewController being setup and added to array of view controllers
-//        
-//        let profileView = ProfileeViewController(collectionViewLayout: layout)
-//        
-//        let profileViewNavController = UINavigationController(rootViewController: profileView)
-//        profileViewNavController.navigationBar.isTranslucent = false
-//        profileViewNavController.tabBarItem.image = UIImage(named: "icons8-User-50")
-//        profileViewNavController.tabBarItem.selectedImage = UIImage(named: "icons8-User Filled-50")
-//        
-//        profileViewNavController.tabBarItem.title = "Search"
-//
-//        let searchController = EventSearchController(collectionViewLayout: UICollectionViewFlowLayout())
-//        let searchNavController = UINavigationController(rootViewController: searchController)
-//        searchNavController.tabBarItem.image = UIImage(named: "icons8-Search-48")
-// 
-//        searchNavController.tabBarItem.title = "Search"
-//
-//        
-//        // array of view controllers
-//        viewControllers = [navController,searchNavController, profileViewNavController]
-//      
-//        
-//    
-//        
-//    }
-//    
-//    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 }
-
-
-
-
-
 
 extension HomeViewController: EZSwipeControllerDataSource {
     func viewControllerData() -> [UIViewController] {
@@ -83,43 +38,77 @@ extension HomeViewController: EZSwipeControllerDataSource {
         
         let layout = UICollectionViewFlowLayout()
         let homeFeedController = HomeFeedController(collectionViewLayout: layout)
-//        let navController = UINavigationController(rootViewController: homeFeedController)
-//        navController.navigationBar.isTranslucent = false
-//        navController.tabBarItem.image = UIImage(named: "icons8-Home-50")
-//        navController.tabBarItem.selectedImage = UIImage(named: "icons8-Home Filled-50")
         
-//        navController.tabBarItem.title = "Home"
-        //ProfileeViewController being setup and added to array of view controllers
         
         let profileView = ProfileeViewController(collectionViewLayout: layout)
         
-//        let profileViewNavController = UINavigationController(rootViewController: profileView)
-//        profileViewNavController.navigationBar.isTranslucent = false
-//        profileViewNavController.tabBarItem.image = UIImage(named: "icons8-User-50")
-//        profileViewNavController.tabBarItem.selectedImage = UIImage(named: "icons8-User Filled-50")
-        
-//        profileViewNavController.tabBarItem.title = "Search"
         
         let searchController = EventSearchController(collectionViewLayout: UICollectionViewFlowLayout())
-//        let searchNavController = UINavigationController(rootViewController: searchController)
-//        searchNavController.navigationBar.isTranslucent = false
-
-//        searchNavController.tabBarItem.image = UIImage(named: "icons8-Search-48")
-        
-//        searchNavController.tabBarItem.title = "Search"
-       
         return [searchController, homeFeedController, profileView]
     }
     
     func titlesForPages() -> [String] {
-        return ["Search", "Home", "Profile"]
+        return ["", "Home", ""]
+    }
+    
+    func navigationBarDataForPageIndex(_ index: Int) -> UINavigationBar {
+        var title = ""
+        if index == 0 {
+            title = ""
+        } else if index == 1 {
+            title = "Home"
+        } else if index == 2 {
+            title = ""
+        }
+        
+        let navigationBar = UINavigationBar()
+        navigationBar.barStyle = UIBarStyle.default
+        //        navigationBar.barTintColor = QorumColors.WhiteLight
+        print(navigationBar.barTintColor ?? "")
+        navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.black]
+        
+        let navigationItem = UINavigationItem(title: title)
+        navigationItem.hidesBackButton = true
+        
+        if index == 0 {
+            navigationItem.leftBarButtonItem = nil
+            navigationItem.rightBarButtonItem = nil
+            navigationBar.isHidden = true
+        } else if index == 1 {
+            var menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "menu"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(GoBack))
+            navigationItem.leftBarButtonItem = menuButton
+            navigationItem.rightBarButtonItem = nil
+            
+        } else if index == 2 {
+            navigationItem.leftBarButtonItem = nil
+            navigationItem.rightBarButtonItem = nil
+            navigationBar.isHidden = true
+        }
+        navigationBar.pushItem(navigationItem, animated: false)
+        return navigationBar
+    }
+    
+    func disableSwipingForLeftButtonAtPageIndex(_ index: Int) -> Bool {
+        if index == 1 {
+            return true
+        }
+        return false
+    }
+    
+    func clickedLeftButtonFromPageIndex(_ index: Int) {
+        if index == 1 {
+            print("Left Button Clicked")
+            dropDownLauncher.showDropDown()
+        }
+    }
+    
+    
+    
+    func GoBack() {
+        print("Button pressed")
     }
     
     func indexOfStartingPage() -> Int {
-        return 1 // EZSwipeController starts from 2nd, green page
+        return 1
     }
-    
 }
-
-
-

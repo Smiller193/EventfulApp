@@ -19,10 +19,10 @@ class User : NSObject {
     var isFollowed = false
     let bio: String?
     var dictValue: [String : Any] {
-        return ["gender" : gender,
-                "username" : username,
-                "profilePic" : profilePic,
-                "Bio" : bio, "location": location]
+        return ["gender" : gender as Any,
+                "username" : username as Any,
+                "profilePic" : profilePic as Any,
+                "Bio" : bio as Any, "location": location as Any]
     }
     
     //Standard User init()
