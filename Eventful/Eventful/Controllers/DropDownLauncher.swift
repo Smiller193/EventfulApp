@@ -17,7 +17,7 @@ class DropDown: NSObject {
 }
 class DropDownLauncher: NSObject, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     let dropDown: [DropDown] = {
-        return [DropDown(name: "Seize The Day", imageName: "summer"), DropDown(name: "Dress To Impress", imageName: "suit"), DropDown(name: "I Love College", imageName: "college"),DropDown(name: "21 & Up", imageName: "21")]
+        return [DropDown(name: "Seize The Night", imageName: "night"),DropDown(name: "Seize The Day", imageName: "summer"), DropDown(name: "Dress To Impress", imageName: "suit"), DropDown(name: "I Love College", imageName: "college"),DropDown(name: "21 & Up", imageName: "21")]
     }()
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dropDown.count
@@ -34,6 +34,22 @@ class DropDownLauncher: NSObject, UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let dropDown = self.dropDown[indexPath.item]
+        print(dropDown.name)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { 
+            self.blackView.alpha = 0
+            if let window = UIApplication.shared.keyWindow{
+                self.collectionView.frame = CGRect(x: 0, y: -(window.frame.height), width: self.collectionView.frame.width, height: self.collectionView.frame.height)
+            }
+        }) { (<#Bool#>) in
+            <#code#>
+        }
+        
+    }
+    
     override init(){
         super.init()
         collectionView.dataSource = self
